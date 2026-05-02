@@ -1,0 +1,134 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Hind+Siliguri:wght@400;500;600;700&family=Galada&display=swap');
+@import "tailwindcss";
+
+@keyframes scan {
+  from { top: 0; }
+  to { top: 100%; }
+}
+
+.animate-scan {
+  animation: scan 3s linear infinite;
+}
+
+@theme {
+  --font-sans: "Inter Tight", "Inter", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+  --font-bengali: "Hind Siliguri", sans-serif;
+  --font-galada: "Galada", cursive;
+  --font-bangla: "Hind Siliguri", sans-serif;
+  
+  --color-brand: #10b981;
+  --color-brand-dark: #064e3b;
+  --color-brand-accent: #34d399;
+}
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased selection:bg-brand selection:text-white text-[14px];
+  }
+}
+
+/* Glass Morphism Effects */
+.frosted {
+  @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-xl;
+}
+
+.glass-card {
+  @apply bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/40 backdrop-blur-sm transition-all duration-500 relative overflow-hidden;
+}
+
+.glass-card:hover {
+  @apply border-brand/30 shadow-2xl shadow-brand/10 -translate-y-1.5;
+}
+
+.fuel-card-dark {
+  @apply bg-[#020617] border border-white/5 shadow-2xl rounded-[3rem] p-10 relative overflow-hidden text-white;
+}
+
+/* Badge & Indicator */
+.tech-badge {
+  @apply px-4 py-1.5 bg-brand/5 text-brand rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-brand/10 transition-all hover:bg-brand/10;
+}
+
+/* Input Fields */
+.fuel-input {
+  @apply w-full p-6 bg-slate-50 border border-slate-100 rounded-[2rem] text-sm font-bold outline-none focus:border-brand focus:bg-white transition-all shadow-inner focus:shadow-2xl focus:shadow-brand/5 placeholder:text-slate-300;
+}
+
+/* Buttons */
+.btn-primary {
+  @apply px-10 py-5 bg-brand text-white font-black uppercase tracking-[0.2em] rounded-2xl shadow-[0_20px_50px_-10px_rgba(16,185,129,0.3)] hover:bg-emerald-400 hover:translate-y-[-4px] active:translate-y-[0] active:scale-95 transition-all duration-300 text-[11px] disabled:opacity-50 disabled:translate-y-0 disabled:shadow-none;
+}
+
+.btn-secondary {
+  @apply px-10 py-5 bg-white border border-slate-200 text-slate-800 font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-slate-50 transition-all duration-300 text-[11px] flex items-center justify-center gap-3 active:scale-95;
+}
+
+/* Official Type */
+.official-serif {
+  @apply font-serif italic text-slate-900;
+}
+
+/* QR Scanner Customization */
+#reader {
+  border: none !important;
+  border-radius: 2rem !important;
+  overflow: hidden;
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+
+#reader video {
+  border-radius: 2rem !important;
+  object-cover: cover !important;
+}
+
+#reader__scan_region {
+  background-color: #020617 !important;
+  border-radius: 2rem !important;
+  padding: 1rem !important;
+}
+
+#reader__dashboard {
+  background-color: transparent !important;
+  padding-top: 1.5rem !important;
+}
+
+#reader__dashboard_section_csr button {
+  @apply px-6 py-3 bg-brand text-white font-black uppercase tracking-widest text-[10px] rounded-xl shadow-lg shadow-brand/20 hover:bg-emerald-600 transition-all cursor-pointer border-none;
+}
+
+/* Markdown Support */
+.markdown-body {
+  @apply text-slate-600 leading-relaxed text-sm font-sans;
+}
+
+.markdown-body h1, .markdown-body h2 {
+  @apply font-black text-slate-900 uppercase tracking-tight mt-8 mb-4;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Animations */
+@keyframes flow {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-fuel-flow {
+  animation: flow 2s linear infinite;
+}

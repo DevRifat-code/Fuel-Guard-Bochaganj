@@ -1,0 +1,84 @@
+{
+  "entities": {
+    "AppUser": {
+      "title": "AppUser",
+      "description": "User profile with role and approval status",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "email": { "type": "string" },
+        "name": { "type": "string" },
+        "nid": { "type": "string" },
+        "vehicleNumber": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "manager", "admin"] },
+        "isApproved": { "type": "boolean" },
+        "nextFuelDate": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "email", "name", "role", "isApproved"]
+    },
+    "Pump": {
+      "title": "Pump",
+      "description": "Fuel pump station details",
+      "type": "object",
+      "properties": {
+        "pumpId": { "type": "string" },
+        "name": { "type": "string" },
+        "location": { "type": "string" },
+        "address": { "type": "string" },
+        "mapUrl": { "type": "string" },
+        "syncEst": { "type": "string" },
+        "deliveryDate": { "type": "string", "format": "date" }
+      },
+      "required": ["pumpId", "name", "location"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Record of fuel dispensing",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "vehicleNumber": { "type": "string" },
+        "managerId": { "type": "string" },
+        "pumpId": { "type": "string" },
+        "pumpName": { "type": "string" },
+        "amountBdt": { "type": "number" },
+        "liters": { "type": "number" },
+        "fuelType": { "type": "string", "enum": ["octane", "petrol", "diesel"] },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "managerId", "pumpId", "amountBdt", "liters", "fuelType", "timestamp"]
+    },
+    "FuelPrice": {
+      "title": "FuelPrice",
+      "description": "Current fuel prices",
+      "type": "object",
+      "properties": {
+        "octane": { "type": "number" },
+        "petrol": { "type": "number" },
+        "diesel": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["octane", "petrol", "diesel"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "AppUser",
+      "description": "Collection of user profiles"
+    },
+    "pumps/{pumpId}": {
+      "schema": "Pump",
+      "description": "Collection of pump stations"
+    },
+    "transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Collection of fuel transactions"
+    },
+    "settings/fuelPrices": {
+      "schema": "FuelPrice",
+      "description": "Singleton document for fuel prices"
+    }
+  }
+}

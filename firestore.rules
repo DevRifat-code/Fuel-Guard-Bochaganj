@@ -1,0 +1,130 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isEmailVerified() {
+      return request.auth.token.email_verified == true;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin') ||
+        request.auth.token.email == 'mdrifathossainpersonal@gmail.com'
+      );
+    }
+
+    function isManager() {
+      return isSignedIn() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['manager', 'admin'];
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // --- User Rules ---
+    match /users/{userId} {
+      function isValidUser(data) {
+        return data.keys().hasAll(['userId', 'email', 'role', 'isApproved']) &&
+               data.userId is string && data.userId.size() <= 128 &&
+               data.email is string && data.email.size() <= 128 &&
+               data.role in ['user', 'manager', 'admin'] &&
+               data.isApproved is bool;
+      }
+
+      allow get: if isSignedIn() && (isOwner(userId) || isAdmin());
+      allow list: if isAdmin();
+      
+      allow create: if isSignedIn() && 
+        isOwner(userId) && 
+        isValidUser(incoming()) &&
+        incoming().role == 'user' && 
+        incoming().isApproved == false;
+
+      allow update: if isSignedIn() && (
+        // Admin update anything
+        (isAdmin() && isValidUser(incoming())) ||
+        // User update own profile (but not role/approval)
+        (isOwner(userId) && 
+         isValidUser(incoming()) &&
+         incoming().role == existing().role &&
+         incoming().isApproved == existing().isApproved &&
+         incoming().diff(existing()).affectedKeys().hasOnly(['name', 'nid', 'vehicleNumber', 'nextFuelDate', 'licensePhoto']))
+      );
+
+      allow delete: if isAdmin();
+    }
+
+    // --- Pump Rules ---
+    match /pumps/{pumpId} {
+      function isValidPump(data) {
+        return data.keys().hasAll(['pumpId', 'name', 'location']) &&
+               data.pumpId is string && data.pumpId.size() <= 128 &&
+               data.name is string && data.name.size() <= 128 &&
+               data.location is string && data.location.size() <= 1024 &&
+               (!data.keys().contains('address') || (data.address is string && data.address.size() <= 1024)) &&
+               (!data.keys().contains('mapUrl') || (data.mapUrl is string && data.mapUrl.size() <= 2048)) &&
+               (!data.keys().contains('syncEst') || (data.syncEst is string && data.syncEst.size() <= 128)) &&
+               (!data.keys().contains('deliveryDate') || (data.deliveryDate is string && data.deliveryDate.size() <= 128));
+      }
+
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidPump(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // --- Transaction Rules ---
+    match /transactions/{transactionId} {
+      function isValidTransaction(data) {
+        return data.keys().hasAll(['userId', 'managerId', 'pumpId', 'amountBdt', 'fuelType', 'timestamp']) &&
+               data.userId is string && data.userId.size() <= 128 &&
+               data.managerId is string && data.managerId.size() <= 128 &&
+               data.pumpId is string && data.pumpId.size() <= 128 &&
+               data.amountBdt is number && data.amountBdt > 0 &&
+               data.fuelType in ['octane', 'petrol', 'diesel'] &&
+               data.timestamp is timestamp;
+      }
+
+      allow read: if isAdmin() || (isSignedIn() && existing().userId == request.auth.uid);
+      allow create: if isManager() && 
+                      isValidTransaction(incoming()) && 
+                      incoming().managerId == request.auth.uid;
+      // No updates or deletes for transactions
+      allow update, delete: if false;
+    }
+
+    // --- Settings Rules ---
+    match /settings/fuelPrices {
+      function isValidPrice(data) {
+        return data.keys().hasAll(['octane', 'petrol', 'diesel']) &&
+               data.octane is number && data.octane >= 0 &&
+               data.petrol is number && data.petrol >= 0 &&
+               data.diesel is number && data.diesel >= 0;
+      }
+
+      allow read: if true;
+      allow write: if isAdmin() && isValidPrice(incoming());
+    }
+  }
+}

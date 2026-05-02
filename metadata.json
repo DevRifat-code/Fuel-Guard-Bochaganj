@@ -1,0 +1,6 @@
+{
+  "name": "Bochaganj Fuel Distribution Management System",
+  "description": "Bochaganj Fuel Distribution Management System - Secure fuel distribution and monitoring for the 4-station network.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": []
+}
