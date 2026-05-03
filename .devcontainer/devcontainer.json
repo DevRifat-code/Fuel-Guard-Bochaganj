@@ -1,8 +1,0 @@
-"ghcr.io/devcontainers-extra/features/firebase-cli:2":  const firebaseConfig = {
-  apiKey: "AIzaSyDsiPr2ECRhJFOPUwNeXSld3fnEmu3b0_8",
-  authDomain: "fuel-guard-bochaganj-cb82f.firebaseapp.com",
-  projectId: "fuel-guard-bochaganj-cb82f",
-  storageBucket: "fuel-guard-bochaganj-cb82f.firebasestorage.app",
-  messagingSenderId: "7647234647",
-  appId: "1:7647234647:web:1987de36b891027b89b112"
-};
