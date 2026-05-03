@@ -1,10 +1,8 @@
-{
-  "projectId": "fuelguard-bochaganj",
-  "appId": "1:1060481740844:web:caf45fadbce72459962189",
-  "apiKey": "AIzaSyBnLN4HprmXCfCOh4IIfIoeoA8WJpIo9kA",
-  "authDomain": "fuelguard-bochaganj.firebaseapp.com",
-  "firestoreDatabaseId": "https://fuelguard-bochaganj-default-rtdb.firebaseio.com",
-  "storageBucket": "fuelguard-bochaganj.firebasestorage.app",
-  "messagingSenderId": "1060481740844",
-  "measurementId": "G-GJHZ7M2VB6"
-}
+const firebaseConfig = {
+  apiKey: "AIzaSyDsiPr2ECRhJFOPUwNeXSld3fnEmu3b0_8",
+  authDomain: "fuel-guard-bochaganj-cb82f.firebaseapp.com",
+  projectId: "fuel-guard-bochaganj-cb82f",
+  storageBucket: "fuel-guard-bochaganj-cb82f.firebasestorage.app",
+  messagingSenderId: "7647234647",
+  appId: "1:7647234647:web:1987de36b891027b89b112"
+};
