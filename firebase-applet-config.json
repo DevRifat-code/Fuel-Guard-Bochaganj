@@ -5,4 +5,4 @@ const firebaseConfig = {
   storageBucket: "fuel-guard-bochaganj-cb82f.firebasestorage.app",
   messagingSenderId: "7647234647",
   appId: "1:7647234647:web:1987de36b891027b89b112"
-};
+}
