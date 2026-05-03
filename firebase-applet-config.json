@@ -1,4 +1,4 @@
-const firebaseConfig = {
+{
   apiKey: "AIzaSyDsiPr2ECRhJFOPUwNeXSld3fnEmu3b0_8",
   authDomain: "fuel-guard-bochaganj-cb82f.firebaseapp.com",
   projectId: "fuel-guard-bochaganj-cb82f",
