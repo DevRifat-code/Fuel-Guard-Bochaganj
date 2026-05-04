@@ -38,6 +38,10 @@
   @apply bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/40 backdrop-blur-sm transition-all duration-500 relative overflow-hidden;
 }
 
+.dark .glass-card {
+  @apply bg-white/5 border-white/5 shadow-2xl shadow-black/40;
+}
+
 .glass-card:hover {
   @apply border-brand/30 shadow-2xl shadow-brand/10 -translate-y-1.5;
 }
@@ -56,6 +60,10 @@
   @apply w-full p-6 bg-slate-50 border border-slate-100 rounded-[2rem] text-sm font-bold outline-none focus:border-brand focus:bg-white transition-all shadow-inner focus:shadow-2xl focus:shadow-brand/5 placeholder:text-slate-300;
 }
 
+.dark .fuel-input {
+  @apply bg-white/5 border-white/10 text-white focus:bg-white/10 focus:border-brand;
+}
+
 /* Buttons */
 .btn-primary {
   @apply px-10 py-5 bg-brand text-white font-black uppercase tracking-[0.2em] rounded-2xl shadow-[0_20px_50px_-10px_rgba(16,185,129,0.3)] hover:bg-emerald-400 hover:translate-y-[-4px] active:translate-y-[0] active:scale-95 transition-all duration-300 text-[11px] disabled:opacity-50 disabled:translate-y-0 disabled:shadow-none;
@@ -63,6 +71,10 @@
 
 .btn-secondary {
   @apply px-10 py-5 bg-white border border-slate-200 text-slate-800 font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-slate-50 transition-all duration-300 text-[11px] flex items-center justify-center gap-3 active:scale-95;
+}
+
+.dark .btn-secondary {
+  @apply bg-white/5 border-white/10 text-white hover:bg-white/10;
 }
 
 /* Official Type */

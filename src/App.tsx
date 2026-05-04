@@ -89,7 +89,13 @@ import {
   AlertTriangle,
   Edit,
   Plus,
-  ArrowUp
+  ArrowUp,
+  Activity,
+  Shield,
+  ArrowRight,
+  Sun,
+  Moon,
+  Home
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
@@ -97,28 +103,20 @@ import * as htmlToImage from 'html-to-image';
 import { format, isAfter, parseISO, addDays, differenceInDays } from 'date-fns';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { Language, TRANSLATIONS } from './constants';
+import LandingPage from './components/LandingPage';
 
 // Helper for Tailwind
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-type Language = 'en' | 'bn';
-
-const TRANSLATIONS = {
+// DELETING OLD TRANSLATIONS
+const OLD_TRANSLATIONS = {
   en: {
-    appName: "FuelGuard Setabganj",
     welcomeBack: "Authorized Personnel Login",
+
     loginSubtitle: "Scan your credentials or authenticate via digital channel",
-    userManual: "User Guidelines",
-    register: "Register Vehicle",
-    helpline: "Official Helpline",
-    getQrWithOtp: "Authorize Fuel Pass",
-    phoneNumber: "Mobile Number",
-    registrationNumber: "Registration Number",
-    confirmPassword: "Confirm Password",
-    email: "Email Address",
-    fullName: "Full Name",
     passwordMismatch: "Passwords do not match",
     passwordWeak: "Password must be at least 8 characters",
     password: "Password",
@@ -163,6 +161,30 @@ const TRANSLATIONS = {
     step3Desc: "Linear cooldown logic: 100 BDT = 1 Day. System prevents overproduction and manages regional fuel reserves.",
     monitoringNode: "Centralized Monitoring Node",
     monitoringDesc: "Super Admins maintain a live synchronization layer across all 4 pump stations. Every transaction is indexed by Vehicle ID, Terminal ID, and Dispensing Personnel.",
+    latestTransactions: "Latest Transaction Logs",
+    availableLimit: "Available Limit",
+    totalActiveVehicles: "Total Active Vehicles",
+    scanQr: "Scan vehicle QR",
+    theme: "Theme",
+    switchToLight: "Switch to Light mode",
+    switchToDark: "Switch to Dark mode",
+    statusAvailable: "Available",
+    successAvailable: "Success Available",
+    driverName: "Driver Name",
+    timestamp: "Timestamp",
+    quantityLiters: "Quantity (Liters)",
+    recentTransactionFeed: "Recent Transaction Feed",
+    criticalSystemAlerts: "Critical System Alerts",
+    appUptime: "Appuptime",
+    latency: "Latency",
+    centralMonitoringNode: "Central Monitoring Node",
+    step1Landing: "Register/Onboarding",
+    step2Landing: "Verify and Information",
+    step3Landing: "Fill and Complete",
+    globalStatus: "Global Network Status",
+    activeNodes: "Active Nodes",
+    systemPerformance: "System Performance",
+    viewDashboard: "View Dashboard",
     globalEfficiency: "Global Efficiency",
     uptime: "Terminal Uptime Sync",
     privacy: "Privacy Protocol",
@@ -182,7 +204,7 @@ const TRANSLATIONS = {
     adminTitle: "Upazila Nirbahi Officer (UNO)",
     adminMobile: "01761-493526",
     adminPhone: "05325-73009",
-    adminEmail: "unobochaganj@mopa.gov.bd",
+    adminEmail: "unobochaganj@gov.bd",
     supportMessenger: "Support Messenger",
     facebookProfile: "Facebook Profile",
     facebookMessengerLink: "https://www.facebook.com/messages/t/61564992836491",
@@ -445,7 +467,7 @@ const TRANSLATIONS = {
     adminTitle: "উপজেলা নির্বাহী অফিসার (ইউএনও)",
     adminMobile: "০১৭৬১-৪৯৩৫২৬",
     adminPhone: "০৫৩২৫-৭৩০০৯",
-    adminEmail: "unobochaganj@mopa.gov.bd",
+    adminEmail: "unobochaganj@gov.bd",
     supportMessenger: "সাপোর্ট মেসেঞ্জার",
     facebookProfile: "ফেসবুক প্রোফাইল",
     facebookMessengerLink: "https://www.facebook.com/messages/t/61564992836491",
@@ -581,7 +603,31 @@ const TRANSLATIONS = {
     contactInfo: "যোগাযোগের তথ্য",
     licenseInfo: "লাইসেন্স তথ্য",
     activity: "কার্যক্রম",
-    systemLogs: "সিস্টেম লগ"
+    systemLogs: "সিস্টেম লগ",
+    latestTransactions: "সর্বশেষ লেনদেনের রেকর্ড",
+    availableLimit: "অবশিষ্ট জ্বালানি সীমা",
+    totalActiveVehicles: "মোট সক্রিয় যানবাহন",
+    scanQr: "যানবাহন কিউআর স্ক্যান করুন",
+    theme: "থিম",
+    switchToLight: "লাইট মোডে সুইচ করুন",
+    switchToDark: "ডার্ক মোডে সুইচ করুন",
+    statusAvailable: "পর্যাপ্ত",
+    successAvailable: "সফলভাবে সচল",
+    driverName: "চালকের নাম",
+    timestamp: "সময়",
+    quantityLiters: "পরিমাণ (লিটার)",
+    recentTransactionFeed: "সাম্প্রতিক লেনদেন ফিড",
+    criticalSystemAlerts: "গুরুত্বপূর্ণ সিস্টেম অ্যালার্ট",
+    appUptime: "অ্যাপ আপটাইম",
+    latency: "ল্যাটেন্সি",
+    centralMonitoringNode: "কেন্দ্রীয় পর্যবেক্ষণ নোড",
+    step1Landing: "বোর্ডিং/রেজিস্ট্রেশন",
+    step2Landing: "তথ্য যাচাইকরণ",
+    step3Landing: "জ্বালানি সংগ্রহ ও সম্পন্ন",
+    globalStatus: "সার্বিক নেটওয়ার্ক স্ট্যাটাস",
+    activeNodes: "সক্রিয় নোড",
+    systemPerformance: "সিস্টেমের দক্ষতা",
+    viewDashboard: "ড্যাশবোর্ড দেখুন"
   }
 };
 
@@ -842,7 +888,7 @@ function TopBar({ user, lang, setLang, onProfileClick, onSignOut }: {
   );
 }
 
-function IdCardModal({ user, lang, onClose }: { user: AppUser, lang: Language, onClose: () => void }) {
+function IdCardModal({ user, lang, onClose, isDark }: { user: AppUser, lang: Language, onClose: () => void, isDark: boolean }) {
   const t = TRANSLATIONS[lang];
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -863,27 +909,27 @@ function IdCardModal({ user, lang, onClose }: { user: AppUser, lang: Language, o
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-white rounded-[2rem] shadow-2xl max-w-2xl w-full p-8"
+        className={cn("rounded-[2rem] shadow-2xl max-w-2xl w-full p-4 md:p-8 relative", isDark ? "bg-slate-900 border border-white/10" : "bg-white")}
       >
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-6 md:mb-8">
           <div>
-            <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tight">{t.userDigitalId}</h3>
-            <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">{t.readyForCollection}</p>
+            <h3 className={cn("text-xl md:text-2xl font-black uppercase tracking-tight", isDark ? "text-white" : "text-slate-800")}>{t.userDigitalId}</h3>
+            <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">{t.readyForCollection}</p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-            <X size={24} className="text-slate-400" />
+          <button onClick={onClose} className={cn("p-2 rounded-full transition-colors", isDark ? "hover:bg-white/5 text-white/40" : "hover:bg-slate-100 text-slate-400")}>
+            <X size={24} />
           </button>
         </div>
 
-        <div className="flex flex-col items-center gap-8">
+        <div className="flex flex-col items-center gap-6 md:gap-8 overflow-x-auto pb-4 scrollbar-hide">
           {/* ID CARD CONTAINER - Precise 85mm x 55mm aspect ratio for professional finish */}
           <div 
             ref={cardRef}
-            className="w-[500px] h-[320px] relative overflow-hidden flex flex-col p-0"
+            className="w-[500px] h-[320px] shrink-0 relative overflow-hidden flex flex-col p-0 scale-[0.6] sm:scale-100 origin-center"
             style={{ 
               fontFamily: "'Inter', sans-serif",
               backgroundColor: '#ffffff',
@@ -1041,234 +1087,160 @@ function IdCardModal({ user, lang, onClose }: { user: AppUser, lang: Language, o
   );
 }
 
-function DashboardUser({ user, lang, onProfileClick }: { user: AppUser, lang: Language, onProfileClick: () => void }) {
+function DashboardUser({ user, onProfileClick, lang, isDark }: { user: AppUser, onProfileClick: () => void, lang: Language, isDark: boolean }) {
   const t = TRANSLATIONS[lang];
   const [showIdCard, setShowIdCard] = useState(false);
   
-  // Usage tracking logic (mocked for now)
   const usageStats = {
     daily: { current: 1.5, limit: 12.5 },
-    monthly: { current: 5.2, limit: 60.0 },
-    weekly: { current: 3.8 }
+    monthly: { current: 15.2, limit: 60.0 },
+    weekly: { current: 5.8 }
   };
 
   const chartData = [
-    { name: '24/04', liters: 2.1 },
-    { name: '25/04', liters: 1.5 },
-    { name: '26/04', liters: 3.2 },
-    { name: '27/04', liters: 0.8 },
-    { name: '28/04', liters: 2.4 },
-    { name: '29/04', liters: 1.8 },
-    { name: '30/04', liters: 0.0 },
-    { name: '01/05', liters: 1.5 },
+    { name: lang === 'bn' ? 'রবি' : 'Sun', liters: 1.2 },
+    { name: lang === 'bn' ? 'সোম' : 'Mon', liters: 1.8 },
+    { name: lang === 'bn' ? 'মঙ্গল' : 'Tue', liters: 1.5 },
+    { name: lang === 'bn' ? 'বুধ' : 'Wed', liters: 2.1 },
+    { name: lang === 'bn' ? 'বৃহ' : 'Thu', liters: 1.9 },
+    { name: lang === 'bn' ? 'শুক্র' : 'Fri', liters: 2.4 },
+    { name: lang === 'bn' ? 'শনি' : 'Sat', liters: 2.0 },
   ];
 
   return (
-    <div className="space-y-8">
-      {/* Profile Info Card with Mission Control Style */}
-      <div className="glass-card !p-0 overflow-hidden border-brand/5 shadow-2xl shadow-slate-200/20">
-        <div className="p-10 flex flex-col xl:flex-row items-center gap-12 relative">
-           <div className="absolute top-0 right-0 w-64 h-full bg-brand/5 skew-x-[30deg] -mr-32 pointer-events-none" />
-           <div className="relative group shrink-0" onClick={onProfileClick}>
-             <div className="w-32 h-32 rounded-[2.5rem] border-4 border-white overflow-hidden bg-slate-100 flex items-center justify-center shadow-2xl group-hover:scale-105 transition-all duration-500 ring-1 ring-slate-100">
-                {user.licensePhoto ? (
-                  <img src={user.licensePhoto} alt={user.name} className="w-full h-full object-cover" />
-                ) : (
-                  <UserIcon size={48} className="text-slate-200" />
-                )}
-             </div>
-             <motion.button 
-               whileHover={{ scale: 1.1 }}
-               whileTap={{ scale: 0.9 }}
-               className="absolute -bottom-2 -right-2 w-12 h-12 bg-white border border-slate-100 rounded-2xl flex items-center justify-center shadow-2xl text-slate-400 hover:text-brand transition-all z-10"
-               title={t.changePhoto}
-             >
-               <Camera size={22} />
-             </motion.button>
-           </div>
-           
-           <div className="flex-1 text-center xl:text-left space-y-4 relative z-10">
-              <div className="flex flex-col xl:flex-row xl:items-center gap-4">
-                <h2 className="text-4xl font-black text-slate-900 uppercase tracking-tighter leading-none">{user.name}</h2>
-                <div className="flex justify-center gap-2">
-                  <span className="tech-badge bg-emerald-50 text-emerald-600 border-emerald-100">
-                    {user.role === 'user' ? 'Digital Permit Node' : user.role}
-                  </span>
-                  {user.isApproved && (
-                    <span className="tech-badge bg-blue-50 text-blue-600 border-blue-100 flex items-center gap-2">
-                       <ShieldCheck size={12} />
-                       Verified 
-                    </span>
-                  )}
-                </div>
-              </div>
-              <p className="text-base font-medium text-slate-400 max-w-2xl leading-relaxed">
-                <span className="text-slate-900 font-bold">{user.phone}</span> • {t.houseHolding}: {user.village || '29100'}, {t.villageStreet}: {user.village || 'Dhantala Jharubari'}, {t.postOffice}: {user.postCode || 'Setabganj - 5216'}, Bochaganj, Dinajpur
-              </p>
-           </div>
-
-           <div className="flex flex-wrap justify-center gap-6 relative z-10">
-              <div className="flex flex-col items-center gap-1.5 p-4 bg-slate-50 rounded-2xl border border-slate-100 shadow-inner">
-                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t.vehicleClassShort}</span>
-                 <div className="text-slate-900 font-black uppercase tracking-widest text-sm">{user.vehicleClass || 'BIKE'}</div>
-              </div>
-              <div className="flex flex-col items-center gap-1.5 p-4 bg-slate-50 rounded-2xl border border-slate-100 shadow-inner">
-                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t.registrationNumberShort}</span>
-                 <div className="text-brand font-black font-mono tracking-widest text-sm">{user.vehicleNumber}</div>
-              </div>
-           </div>
+    <div className="space-y-6 md:space-y-10">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8">
+        <div className="space-y-1 md:space-y-2">
+          <h1 className={cn("text-2xl md:text-4xl font-black tracking-tight uppercase leading-none transition-colors", isDark ? "text-white" : "text-slate-800")}>
+            {lang === 'bn' ? 'স্বাগতম, ' : 'Welcome, '} {user.name}
+          </h1>
+          <p className={cn("font-medium tracking-wide uppercase text-[10px] md:text-xs transition-colors opacity-60", isDark ? "text-slate-400" : "text-slate-500")}>
+            {lang === 'bn' ? 'আপনার ব্যক্তিগত পোর্টাল' : 'Your Personal Portal'} • Node: Setabganj_Hub
+          </p>
         </div>
-        <div className="bg-slate-50/50 px-10 py-4 border-t border-slate-100 flex justify-between items-center">
-           <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Auth_Node: Active</span>
-           </div>
-           <span className="text-[10px] font-mono text-slate-300">Last Sync: {new Date().toLocaleTimeString()}</span>
+        
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => setShowIdCard(true)}
+            className={cn("px-6 md:px-8 py-3 md:py-4 border rounded-[2rem] font-black uppercase text-[10px] tracking-widest shadow-xl transition-all flex items-center gap-3",
+              isDark ? "bg-white/5 border-white/10 text-white shadow-black/20 hover:bg-white/10" : "bg-white border-slate-200 text-slate-800 shadow-slate-200/50 hover:bg-slate-50")}
+          >
+            <CreditCard size={18} className="text-brand" />
+            {lang === 'bn' ? 'ডিজিটাল আইডি' : 'Digital ID'}
+          </button>
+          
+          <button 
+            onClick={onProfileClick}
+            className={cn("w-12 h-12 md:w-14 md:h-14 border rounded-full flex items-center justify-center shadow-xl transition-all",
+              isDark ? "bg-white/5 border-white/10 text-slate-400 hover:text-brand shadow-black/20" : "bg-white border-slate-200 shadow-slate-200/50 hover:bg-slate-50 text-slate-400 hover:text-brand")}
+          >
+            <UserIcon size={24} />
+          </button>
         </div>
       </div>
 
-      {/* Stats Cards Row with Enhanced Utility Design */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-        <motion.div 
-           whileHover={{ y: -5 }}
-           className="glass-card flex flex-col items-center justify-center text-center space-y-6 hover:border-brand group cursor-pointer shadow-2xl shadow-slate-200/20"
-        >
-          <div className="w-20 h-20 bg-emerald-50 rounded-[2.5rem] flex items-center justify-center text-emerald-600 group-hover:bg-brand group-hover:text-white transition-all duration-700 shadow-inner group-hover:rotate-12">
-            <QrCode size={36} />
-          </div>
-          <div>
-            <h4 className="text-[13px] font-black text-slate-900 uppercase tracking-[0.2em]">{t.createQr}</h4>
-            <p className="text-[10px] text-slate-400 font-bold tracking-tight mt-1 opacity-60">Generate secure fuel pass</p>
-          </div>
-        </motion.div>
-
-        <motion.div 
-          whileHover={{ y: -5 }}
-          onClick={() => setShowIdCard(true)}
-          className="glass-card flex flex-col items-center justify-center text-center space-y-6 hover:border-brand group cursor-pointer shadow-2xl shadow-slate-200/20"
-        >
-          <div className="w-20 h-20 bg-emerald-50 rounded-[2.5rem] flex items-center justify-center text-emerald-600 group-hover:bg-brand group-hover:text-white transition-all duration-700 shadow-inner group-hover:-rotate-12">
-            <CreditCard size={36} />
-          </div>
-          <div>
-            <h4 className="text-[13px] font-black text-slate-900 uppercase tracking-[0.2em]">{t.currentQr}</h4>
-            <p className="text-[10px] text-slate-400 font-bold tracking-tight mt-1 opacity-60">Digital official permit</p>
-          </div>
-        </motion.div>
-
-        <UsageCard 
-          title={t.dailyUsage} 
-          current={usageStats.daily.current} 
-          limit={usageStats.daily.limit} 
-          unit="L" 
-          lang={lang} 
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <StatCard 
+          label={t.dailyUsage} 
+          value={usageStats.daily.current} 
+          subValue={`/ ${usageStats.daily.limit} L`}
+          icon={Activity} 
+          colorClass={isDark ? "bg-blue-500/10 text-blue-400 border-blue-500/20" : "bg-blue-50 text-blue-600 border-blue-100"}
+          trend="neutral"
         />
-        <UsageCard 
-          title={t.monthlyUsage} 
-          current={usageStats.monthly.current} 
-          limit={usageStats.monthly.limit} 
-          unit="L" 
-          lang={lang} 
+        <StatCard 
+          label={t.monthlyUsage} 
+          value={usageStats.monthly.current} 
+          subValue="LITERS"
+          icon={TrendingUp} 
+          colorClass={isDark ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-emerald-50 text-emerald-600 border-emerald-100"}
+          trend="up"
         />
-        <div className="glass-card p-10 space-y-6 group shadow-2xl shadow-slate-200/20">
-          <div className="flex justify-between items-start">
-            <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em] leading-tight group-hover:text-brand transition-colors">{t.weeklyUsage}</h4>
-            <div className="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300">
-              <TrendingUp size={14} />
-            </div>
-          </div>
-          <div className="space-y-4">
-            <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-black text-slate-900 tracking-tighter">{usageStats.weekly.current.toFixed(1)}</span>
-              <span className="text-sm font-black text-slate-400 uppercase tracking-widest">L</span>
-            </div>
-            <div className="h-1.5 w-full bg-slate-100 rounded-full flex gap-1 items-center px-1">
-               <div className="h-1 w-full bg-brand rounded-full opacity-20"></div>
-               <div className="h-1 w-full bg-brand rounded-full opacity-20"></div>
-               <div className="h-1 w-full bg-brand rounded-full opacity-20"></div>
-            </div>
-            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-none">Net accumulation</p>
-          </div>
-        </div>
+        <StatCard 
+          label={t.availableLimit} 
+          value={(usageStats.daily.limit - usageStats.daily.current).toFixed(1)} 
+          subValue="READY"
+          icon={Fuel} 
+          colorClass="bg-brand/10 text-brand border-brand/20"
+          trend="up"
+        />
       </div>
 
-      {/* Chart and Transactions */}
-      <div className="grid grid-cols-12 gap-6 pb-12">
-        <div className="col-span-12 lg:col-span-8 glass-card p-8">
-           <div className="flex justify-between items-center mb-10">
-             <h3 className="text-[11px] font-black text-slate-800 uppercase tracking-[0.2em]">{t.last7Days}</h3>
-             <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 rounded-full border border-emerald-100">
-                   <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
-                   <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">Consumption</span>
-                </div>
-             </div>
-           </div>
-           
-           <div className="h-[300px] w-full relative">
-              <div className="absolute left-0 top-0 text-[10px] font-bold text-slate-400 uppercase -rotate-90 -translate-x-full origin-top-right mt-10 tracking-widest">
-                {t.liters}
-              </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <Card title={t.last7Days || "Usage Trends"} className="lg:col-span-8 h-full">
+           <div className="h-[300px] w-full mt-6">
               <ResponsiveContainer width="100%" height="100%">
-                 <AreaChart data={chartData}>
-                    <defs>
-                      <linearGradient id="colorLiters" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#059669" stopOpacity={0.15}/>
-                        <stop offset="95%" stopColor="#059669" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                    <XAxis 
-                      dataKey="name" 
-                      axisLine={false} 
-                      tickLine={false} 
-                      tick={{ fontSize: 9, fontWeight: 800, fill: '#94a3b8' }}
-                      dy={10}
-                    />
-                    <YAxis 
-                      axisLine={false} 
-                      tickLine={false} 
-                      tick={{ fontSize: 9, fontWeight: 800, fill: '#94a3b8' }}
-                    />
-                    <Tooltip 
-                      contentStyle={{ backgroundColor: '#0f172a', borderRadius: '16px', border: 'none', boxShadow: '0 20px 40px -8px rgba(0,0,0,0.2)' }}
-                      itemStyle={{ color: '#fff', fontSize: '11px', fontWeight: 900, textTransform: 'uppercase' }}
-                      labelStyle={{ fontWeight: 900, fontSize: '10px', color: '#64748b', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.1em' }}
-                    />
-                    <Area 
-                      type="monotone" 
-                      dataKey="liters" 
-                      stroke="#059669" 
-                      strokeWidth={3}
-                      fillOpacity={1} 
-                      fill="url(#colorLiters)" 
-                    />
-                 </AreaChart>
+                <AreaChart data={chartData}>
+                  <defs>
+                    <linearGradient id="usageGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#2563eb" stopOpacity={0.1}/>
+                      <stop offset="95%" stopColor="#2563eb" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <XAxis 
+                    dataKey="name" 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fontSize: 10, fontWeight: 700, fill: '#64748b' }} 
+                    dy={16}
+                  />
+                  <YAxis 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fontSize: 10, fontWeight: 700, fill: '#64748b' }} 
+                  />
+                  <Tooltip 
+                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', fontSize: '11px', fontWeight: 'bold' }}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="liters" 
+                    stroke="#2563eb" 
+                    strokeWidth={4} 
+                    fillOpacity={1} 
+                    fill="url(#usageGradient)" 
+                    dot={{ fill: '#2563eb', strokeWidth: 2, r: 4 }}
+                  />
+                </AreaChart>
               </ResponsiveContainer>
            </div>
-        </div>
+        </Card>
 
-        <div className="col-span-12 lg:col-span-4 space-y-6">
-           <div className="glass-card p-8 h-full flex flex-col">
-              <div className="flex justify-between items-center mb-8">
-                 <h3 className="text-[11px] font-black text-slate-800 uppercase tracking-[0.2em]">{t.transactions}</h3>
-                 <button className="text-[10px] font-black text-brand uppercase tracking-widest hover:underline">{t.viewAll}</button>
+        <div className="lg:col-span-4 space-y-8">
+          <div className="bg-brand rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-2xl shadow-brand/30">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-bl-full translate-x-8 -translate-y-8"></div>
+            <div className="relative z-10 space-y-6">
+              <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center border border-white/20">
+                 <ShieldCheck size={28} />
               </div>
-              
-              <div className="flex-1 flex flex-col items-center justify-center text-center space-y-4">
-                 <div className="w-20 h-20 rounded-[2.5rem] bg-slate-50 flex items-center justify-center text-slate-200 border border-slate-100 shadow-inner">
-                    <History size={32} strokeWidth={1.5} />
-                 </div>
-                 <div className="space-y-1">
-                   <p className="text-sm font-black text-slate-800 uppercase tracking-tight">System Standby</p>
-                   <p className="text-xs font-bold text-slate-400 px-6">Your recent activity will manifest here upon synchronization.</p>
-                 </div>
+              <div className="space-y-1">
+                 <h3 className="text-[11px] font-black uppercase tracking-[0.2em] opacity-60">Status Authorization</h3>
+                 <p className="text-3xl font-black tracking-tight">{user.isApproved ? 'VERIFIED_ACTIVE' : 'PENDING_REVIEW'}</p>
               </div>
-           </div>
+            </div>
+          </div>
+
+          <div className="bg-slate-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-2xl">
+            <div className="relative z-10 space-y-6 text-center">
+               <QrCode size={48} className="mx-auto text-brand" />
+               <p className="text-[11px] font-black uppercase tracking-[0.3em] opacity-40">Dynamic Token Access</p>
+               <button 
+                onClick={() => setShowIdCard(true)}
+                className="w-full py-4 bg-white/10 hover:bg-white text-white hover:text-slate-900 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all border border-white/10"
+               >
+                 Show Digital ID
+               </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {showIdCard && <IdCardModal user={user} lang={lang} onClose={() => setShowIdCard(false)} />}
+      <AnimatePresence>
+        {showIdCard && (
+          <IdCardModal user={user} lang={lang} onClose={() => setShowIdCard(false)} />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -1309,16 +1281,92 @@ function UsageCard({ title, current, limit, unit, lang }: { title: string, curre
   );
 }
 
-function TransactionHistory({ lang }: { lang: Language }) {
+function UserProfileView({ user, lang, isDark }: { user: AppUser, lang: Language, isDark: boolean }) {
+  const t = TRANSLATIONS[lang];
+  
+  const infoItems = [
+    { label: t.fullName, value: user.name, icon: UserIcon },
+    { label: t.phoneNumber, value: user.phone, icon: Phone },
+    { label: t.nidNumber, value: user.nid, icon: CreditCard },
+    { label: t.registrationNumber, value: user.vehicleNumber, icon: Truck },
+    { label: t.vehicleClassShort, value: user.vehicleClass, icon: Zap },
+    { label: t.manufactureYearShort, value: user.manufactureYear, icon: Clock },
+    { label: t.postOffice, value: user.postCode, icon: Mail },
+    { label: t.houseHolding, value: user.village, icon: Home },
+  ];
+
+  return (
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+        <div className="space-y-2">
+          <h2 className={cn("text-3xl font-black tracking-tight uppercase leading-none", isDark ? "text-white" : "text-slate-800")}>
+            {t.profile}
+          </h2>
+          <p className={cn("text-xs font-bold uppercase tracking-widest flex items-center gap-2", isDark ? "text-slate-500" : "text-slate-400")}>
+            <ShieldCheck size={14} className="text-brand" /> {lang === 'bn' ? 'যাচাইকৃত তথ্য' : 'Verified Information'}
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {infoItems.map((item, idx) => (
+          <motion.div 
+            key={idx}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: idx * 0.05 }}
+            className={cn("p-6 rounded-[2rem] border transition-all", 
+              isDark ? "bg-white/5 border-white/10" : "bg-white border-slate-100 shadow-sm shadow-slate-200/50")}
+          >
+            <div className="flex items-center gap-4">
+              <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center transition-colors", 
+                isDark ? "bg-white/10 text-brand" : "bg-brand/5 text-brand")}>
+                <item.icon size={20} />
+              </div>
+              <div className="space-y-1">
+                <p className={cn("text-[10px] font-black uppercase tracking-widest", isDark ? "text-slate-500" : "text-slate-400")}>
+                  {item.label}
+                </p>
+                <p className={cn("text-sm font-bold", isDark ? "text-white" : "text-slate-800")}>
+                  {item.value || (lang === 'bn' ? 'তথ্য নেই' : 'Not Provided')}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      <div className={cn("p-10 rounded-[3rem] border flex flex-col md:flex-row items-center gap-8 text-center md:text-left", 
+        isDark ? "bg-blue-900/10 border-blue-900/20" : "bg-blue-50 border-blue-100")}>
+        <div className="w-20 h-20 bg-blue-900 rounded-[2rem] flex items-center justify-center text-white shadow-xl shadow-blue-900/20">
+          <ShieldCheck size={40} />
+        </div>
+        <div className="flex-1 space-y-2">
+          <h3 className={cn("text-xl font-black uppercase tracking-tight", isDark ? "text-white" : "text-blue-900")}>
+            {lang === 'bn' ? 'নিরাপত্তা ও গোপনীয়তা' : 'Security & Privacy'}
+          </h3>
+          <p className={cn("text-sm font-medium", isDark ? "text-slate-400" : "text-blue-800/60")}>
+            {lang === 'bn' 
+              ? 'আপনার সংগৃহীত তথ্য শুধুমাত্র দাপ্তরিক কাজের জন্য সংরক্ষিত এবং নিরাপদ। কোন তথ্যে ভুল থাকলে ইউএনও অফিসে যোগাযোগ করুন।' 
+              : 'Your information is securely stored for official use only. Contact the UNO office if any information needs correction.'}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TransactionHistory({ lang, isDark }: { lang: Language, isDark: boolean }) {
   const t = TRANSLATIONS[lang];
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+    <div className={cn("rounded-[2rem] border p-8 transition-colors", 
+      isDark ? "bg-white/5 border-white/10" : "bg-white border-slate-200")}>
       <div className="flex justify-between items-center mb-8">
-        <h3 className="text-xl font-black text-slate-800 uppercase tracking-tight">{t.allTransactions}</h3>
+        <h3 className={cn("text-xl font-black uppercase tracking-tight", isDark ? "text-white" : "text-slate-800")}>{t.allTransactions}</h3>
       </div>
-      <div className="flex flex-col items-center justify-center py-20 text-slate-300 gap-4">
+      <div className={cn("flex flex-col items-center justify-center py-20 gap-4", isDark ? "text-white/10" : "text-slate-200")}>
         <History size={64} strokeWidth={1} />
-        <p className="font-bold text-slate-400">Transaction history will appear here</p>
+        <p className={cn("font-bold", isDark ? "text-slate-500" : "text-slate-400")}>{lang === 'bn' ? 'লেনদেনের তালিকা এখানে প্রদর্শিত হবে' : 'Transaction history will appear here'}</p>
       </div>
     </div>
   );
@@ -1386,78 +1434,148 @@ function StationManagement({ pumps, lang, showToast }: { pumps: Pump[], lang: La
 
 // --- Components ---
 
-function Header({ user, onSignOut, lang, setLang, onAuthModeChange }: { 
+function Header({ user, onSignOut, lang, setLang, onAuthModeChange, activeTab, onTabChange, isDark, onToggleTheme }: { 
   user: AppUser | null, 
   onSignOut: () => void,
   lang: Language,
   setLang: (l: Language) => void,
-  onAuthModeChange?: (mode: 'login' | 'signup') => void
+  onAuthModeChange?: (mode: 'login' | 'signup') => void,
+  activeTab?: string,
+  onTabChange?: (tab: string) => void,
+  isDark: boolean,
+  onToggleTheme: () => void
 }) {
   const t = TRANSLATIONS[lang];
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
+  const handleTabClick = (tabId: string) => {
+    onTabChange?.(tabId);
+    setMobileMenuOpen(false);
+  };
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-[100] bg-white border-b border-slate-200 shadow-sm overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 py-4 flex flex-col md:flex-row justify-between items-center gap-6">
+    <header className={cn("fixed top-0 left-0 right-0 z-[100] border-b shadow-sm overflow-hidden transition-colors duration-300", isDark ? "bg-slate-950/80 backdrop-blur-md border-white/5 shadow-2xl" : "bg-white/80 backdrop-blur-md border-slate-200")}>
+      <div className="max-w-7xl mx-auto px-4 md:px-12 py-3 flex justify-between items-center h-20 md:h-24">
         
-        {/* User requested header section */}
-        <div className="text-center md:text-left flex items-center gap-6">
-          <div className="w-14 h-14 bg-white flex items-center justify-center border border-slate-100 p-1 shadow-sm rounded-xl">
+        <div className="flex items-center gap-3 md:gap-6 cursor-pointer" onClick={() => onTabChange?.('dashboard')}>
+          <div className={cn("w-10 h-10 md:w-14 md:h-14 flex items-center justify-center border p-1 shadow-sm rounded-xl transition-colors shrink-0", isDark ? "bg-slate-900 border-white/10" : "bg-white border-slate-100")}>
             <img 
               src="https://scontent.fdac22-2.fna.fbcdn.net/v/t39.30808-6/272973958_300659878763472_3113526947061015013_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=4p2JAvH_V80Q7kNvwFUadwf&_nc_oc=AdrX7Z_8acCYQ_4FFVhlGV-t6qUi1eRUlorlkGlKZuRH7F46AEiWGuqCAPS4FGZIfiY&_nc_zt=23&_nc_ht=scontent.fdac22-2.fna&_nc_gid=9ypYlGD5YuNZHuNFoLNvrQ&_nc_ss=7b2a8&oh=00_Af2NfhmojOoIpoxPaRCLdwZuSicUReO6HD2I51XxlHJwUg&oe=69F9594F" 
               alt="Gov Logo" 
               className="w-full h-full object-contain" 
+              loading="lazy"
             />
           </div>
           <div className="flex flex-col">
-            <h1 className="font-galada text-2xl md:text-3xl text-blue-800 mb-0 leading-tight">
-              বোচাগঞ্জ ফুয়েল কন্ট্রোল
+            <h1 className={cn("font-galada text-lg md:text-2xl mb-0 leading-tight transition-colors truncate max-w-[150px] md:max-w-none", isDark ? "text-white" : "text-blue-800")}>
+              {lang === 'bn' ? 'বোচাগঞ্জ ফুয়েল কন্ট্রোল' : 'Bochaganj Fuel Control'}
             </h1>
-            <p className="font-bangla text-slate-500 text-xs md:text-sm font-medium">
-              উপজেলা নির্বাহী অফিসারের কার্যালয়, বোচাগঞ্জ
+            <p className={cn("font-bangla text-[10px] md:text-sm font-medium transition-colors opacity-70", isDark ? "text-slate-400" : "text-slate-500")}>
+              {lang === 'bn' ? 'উপজেলা নির্বাহী অফিসারের কার্যালয়' : 'Office of UNO, Bochaganj'}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-6">
-          {/* Language Toggle */}
-          <div className="flex bg-slate-50 p-1 border border-slate-200 rounded-xl overflow-hidden">
+        <div className="flex items-center gap-2 md:gap-6">
+          {user && (
+            <nav className={cn("hidden lg:flex items-center gap-6 border-r pr-6", isDark ? "border-white/10" : "border-slate-200")}>
+               <button 
+                 onClick={() => handleTabClick('dashboard')}
+                 className={cn("text-[10px] font-black uppercase tracking-widest transition-all", activeTab === 'dashboard' ? (isDark ? "text-brand" : "text-blue-900") : (isDark ? "text-white/40 hover:text-white" : "text-slate-400 hover:text-blue-900"))}
+               >{t.dashboard}</button>
+               {user.role === 'user' && (
+                 <>
+                   <button 
+                     onClick={() => handleTabClick('history')}
+                     className={cn("text-[10px] font-black uppercase tracking-widest transition-all", activeTab === 'history' ? (isDark ? "text-brand" : "text-blue-900") : (isDark ? "text-white/40 hover:text-white" : "text-slate-400 hover:text-blue-900"))}
+                   >{t.allTransactions}</button>
+                   <button 
+                     onClick={() => handleTabClick('profile')}
+                     className={cn("text-[10px] font-black uppercase tracking-widest transition-all", activeTab === 'profile' ? (isDark ? "text-brand" : "text-blue-900") : (isDark ? "text-white/40 hover:text-white" : "text-slate-400 hover:text-blue-900"))}
+                   >{t.profile}</button>
+                 </>
+               )}
+               {user.role === 'admin' && (
+                 <>
+                   <button 
+                     onClick={() => handleTabClick('pending')}
+                     className={cn("text-[10px] font-black uppercase tracking-widest transition-all", activeTab === 'pending' ? (isDark ? "text-brand" : "text-blue-900") : (isDark ? "text-white/40 hover:text-white" : "text-slate-400 hover:text-blue-900"))}
+                   >Pending</button>
+                   <button 
+                     onClick={() => handleTabClick('users')}
+                     className={cn("text-[10px] font-black uppercase tracking-widest transition-all", activeTab === 'users' ? (isDark ? "text-brand" : "text-blue-900") : (isDark ? "text-white/40 hover:text-white" : "text-slate-400 hover:text-blue-900"))}
+                   >{t.manageUsers}</button>
+                   <button 
+                     onClick={() => handleTabClick('pricing')}
+                     className={cn("text-[10px) font-black uppercase tracking-widest transition-all", activeTab === 'pricing' ? (isDark ? "text-brand" : "text-blue-900") : (isDark ? "text-white/40 hover:text-white" : "text-slate-400 hover:text-blue-900"))}
+                   >{t.pricing}</button>
+                   <button 
+                     onClick={() => handleTabClick('stations')}
+                     className={cn("text-[10px] font-black uppercase tracking-widest transition-all", activeTab === 'stations' ? (isDark ? "text-brand" : "text-blue-900") : (isDark ? "text-white/40 hover:text-white" : "text-slate-400 hover:text-blue-900"))}
+                   >{t.manageStations}</button>
+                 </>
+               )}
+            </nav>
+          )}
+
+          <div className="flex items-center gap-2">
             <button 
-              onClick={() => setLang('en')}
-              className={cn("px-4 py-2 text-[10px] font-black uppercase transition-all rounded-lg", lang === 'en' ? "bg-blue-900 text-white shadow-lg" : "text-slate-400 hover:text-blue-900")}
-            >EN</button>
+              onClick={onToggleTheme}
+              className={cn("w-10 h-10 rounded-xl flex items-center justify-center transition-all border shadow-sm", 
+                isDark ? "bg-white/5 border-white/10 text-white hover:bg-white/10" : "bg-white border-slate-200 text-slate-400 hover:text-blue-900 hover:border-blue-900")}
+            >
+              {isDark ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+
+            <div className={cn("hidden sm:flex p-1 border rounded-xl overflow-hidden transition-colors", isDark ? "bg-white/5 border-white/10" : "bg-slate-50 border-slate-200")}>
+              <button 
+                onClick={() => setLang('en')}
+                className={cn("px-3 md:px-4 py-2 text-[10px] font-black uppercase transition-all rounded-lg", lang === 'en' ? (isDark ? "bg-brand text-white" : "bg-blue-900 text-white shadow-lg") : (isDark ? "text-white/40 font-black uppercase" : "text-slate-400 hover:text-blue-900"))}
+              >EN</button>
+              <button 
+                onClick={() => setLang('bn')}
+                className={cn("px-3 md:px-4 py-2 text-[10px] font-black uppercase transition-all rounded-lg font-bangla", lang === 'bn' ? (isDark ? "bg-brand text-white" : "bg-blue-900 text-white shadow-lg") : (isDark ? "text-white/40" : "text-slate-400 hover:text-blue-900"))}
+              >বাংলা</button>
+            </div>
+
             <button 
-              onClick={() => setLang('bn')}
-              className={cn("px-4 py-2 text-[10px] font-black uppercase transition-all rounded-lg", lang === 'bn' ? "bg-blue-900 text-white shadow-lg font-bangla" : "text-slate-400 hover:text-blue-900 font-bangla")}
-            >বাংলা</button>
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className={cn("lg:hidden w-10 h-10 flex items-center justify-center border rounded-xl transition-all shadow-sm", 
+                isDark ? "bg-white/5 border-white/10 text-white" : "bg-white border-slate-200 text-slate-600")}
+            >
+              {mobileMenuOpen ? <X size={20} /> : <Search size={20} className="rotate-90" />}
+            </button>
           </div>
 
-          <div className="h-8 w-px bg-slate-200" />
+          <div className={cn("hidden sm:block h-8 w-px mx-2", isDark ? "bg-white/10" : "bg-slate-200")} />
 
           {user ? (
             <div className="flex items-center gap-4">
               <div className="hidden lg:flex flex-col items-end">
-                 <span className="text-xs font-black text-slate-800 uppercase tracking-tight leading-none">{user.name}</span>
-                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{user.role}</span>
+                 <span className={cn("text-xs font-black uppercase tracking-tight leading-none", isDark ? "text-white" : "text-slate-800")}>{user.name}</span>
+                 <span className={cn("text-[10px] font-bold uppercase tracking-widest", isDark ? "text-slate-500" : "text-slate-400")}>{user.role}</span>
               </div>
               <button 
                 onClick={onSignOut}
-                className="flex items-center gap-3 px-6 py-3 bg-rose-50 text-rose-600 border border-rose-100 rounded-xl hover:bg-rose-100 transition-all font-black uppercase tracking-widest text-[10px] group shadow-sm"
+                className={cn("flex items-center justify-center w-10 h-10 border rounded-xl transition-all shadow-sm",
+                  isDark ? "bg-rose-500/10 text-rose-500 border-rose-500/20 hover:bg-rose-500/20" : "bg-rose-50 text-rose-600 border-rose-100 hover:bg-rose-100")}
+                title={t.logout}
               >
-                <LogOut size={16} className="group-hover:translate-x-1 transition-transform" />
-                <span>{t.logout}</span>
+                <LogOut size={18} />
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-4">
+            <div className="hidden sm:flex items-center gap-4">
               <button 
                 onClick={() => onAuthModeChange?.('signup')}
-                className="text-slate-400 hover:text-blue-900 text-[10px] font-black uppercase tracking-widest transition-all px-4"
+                className={cn("text-[10px] font-black uppercase tracking-widest transition-all px-4", isDark ? "text-white/40 hover:text-white" : "text-slate-400 hover:text-blue-900")}
               >
                 {t.register}
               </button>
               <button 
                 onClick={() => onAuthModeChange?.('login')}
-                className="px-8 py-3.5 bg-blue-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-800 transition-all shadow-xl shadow-blue-900/10 active:scale-95"
+                className={cn("px-6 md:px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl active:scale-95",
+                  isDark ? "bg-brand text-white shadow-brand/20 hover:bg-blue-800" : "bg-blue-900 text-white shadow-blue-900/10 hover:bg-blue-800")}
               >
                 {lang === 'bn' ? 'প্রবেশ করুন' : 'Sign In'}
               </button>
@@ -1465,17 +1583,120 @@ function Header({ user, onSignOut, lang, setLang, onAuthModeChange }: {
           )}
         </div>
       </div>
+
+      {/* Mobile Menu Drawer */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className={cn("lg:hidden border-t overflow-hidden", isDark ? "bg-slate-900 border-white/5" : "bg-slate-50 border-slate-100")}
+          >
+            <div className="p-6 space-y-6">
+              {user && (
+                <div className="space-y-2">
+                  <p className={cn("text-[8px] font-black uppercase tracking-[0.3em] mb-4 opacity-40", isDark ? "text-white" : "text-slate-500")}>Console Navigation</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button 
+                      onClick={() => handleTabClick('dashboard')}
+                      className={cn("flex items-center justify-center gap-3 py-4 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all", 
+                        activeTab === 'dashboard' ? "bg-brand text-white border-brand shadow-lg shadow-brand/20" : (isDark ? "bg-white/5 text-white/50 border-white/10" : "bg-white text-slate-400 border-slate-200"))}
+                    >
+                      <LayoutDashboard size={14} /> {t.dashboard}
+                    </button>
+                    {user.role === 'user' && (
+                      <>
+                        <button 
+                          onClick={() => handleTabClick('history')}
+                          className={cn("flex items-center justify-center gap-3 py-4 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all", 
+                            activeTab === 'history' ? "bg-brand text-white border-brand shadow-lg shadow-brand/20" : (isDark ? "bg-white/5 text-white/50 border-white/10" : "bg-white text-slate-400 border-slate-200"))}
+                        >
+                          <History size={14} /> {t.logs}
+                        </button>
+                        <button 
+                          onClick={() => handleTabClick('profile')}
+                          className={cn("col-span-2 flex items-center justify-center gap-3 py-4 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all", 
+                            activeTab === 'profile' ? "bg-brand text-white border-brand shadow-lg shadow-brand/20" : (isDark ? "bg-white/5 text-white/50 border-white/10" : "bg-white text-slate-400 border-slate-200"))}
+                        >
+                          <UserIcon size={14} /> {t.profile}
+                        </button>
+                      </>
+                    )}
+                    {user.role === 'admin' && (
+                      <>
+                        <button 
+                          onClick={() => handleTabClick('pending')}
+                          className={cn("flex items-center justify-center gap-3 py-4 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all", 
+                            activeTab === 'pending' ? "bg-brand text-white border-brand shadow-lg shadow-brand/20" : (isDark ? "bg-white/5 text-white/50 border-white/10" : "bg-white text-slate-400 border-slate-200"))}
+                        >
+                          <FileText size={14} /> Pending
+                        </button>
+                        <button 
+                          onClick={() => handleTabClick('users')}
+                          className={cn("flex items-center justify-center gap-3 py-4 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all", 
+                            activeTab === 'users' ? "bg-brand text-white border-brand shadow-lg shadow-brand/20" : (isDark ? "bg-white/5 text-white/50 border-white/10" : "bg-white text-slate-400 border-slate-200"))}
+                        >
+                          <Users size={14} /> Users
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-4">
+                 <p className={cn("text-[8px] font-black uppercase tracking-[0.3em] opacity-40", isDark ? "text-white" : "text-slate-500")}>Localization & Terminal</p>
+                 <div className="flex gap-3">
+                    <button 
+                      onClick={() => setLang('en')}
+                      className={cn("flex-1 py-3 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all", 
+                        lang === 'en' ? "bg-blue-900 text-white border-blue-900" : (isDark ? "bg-white/5 text-slate-500 border-white/10" : "bg-white text-slate-400 border-slate-200"))}
+                    >English</button>
+                    <button 
+                      onClick={() => setLang('bn')}
+                      className={cn("flex-1 py-3 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all font-bangla", 
+                        lang === 'bn' ? "bg-blue-900 text-white border-blue-900" : (isDark ? "bg-white/5 text-slate-500 border-white/10" : "bg-white text-slate-400 border-slate-200"))}
+                    >বাংলা</button>
+                 </div>
+              </div>
+
+              {!user && (
+                <div className="flex flex-col gap-3">
+                   <button 
+                    onClick={() => { onAuthModeChange?.('login'); setMobileMenuOpen(false); }}
+                    className="w-full py-4 bg-brand text-white rounded-xl font-black uppercase tracking-widest text-xs"
+                   >SignIn</button>
+                   <button 
+                    onClick={() => { onAuthModeChange?.('signup'); setMobileMenuOpen(false); }}
+                    className={cn("w-full py-4 rounded-xl font-black uppercase tracking-widest text-xs border", isDark ? "bg-white/5 border-white/10 text-white" : "bg-white border-slate-200 text-slate-600")}
+                   >Register</button>
+                </div>
+              )}
+
+              {user && (
+                <button 
+                  onClick={onSignOut}
+                  className="w-full flex items-center justify-center gap-3 py-4 bg-rose-500 text-white rounded-xl font-black uppercase tracking-widest text-xs shadow-lg shadow-rose-500/20"
+                >
+                  <LogOut size={16} /> {t.logout}
+                </button>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
 
 function Card({ children, className, title, subtitle }: { children: ReactNode, className?: string, title?: string, subtitle?: string, key?: any }) {
   return (
-    <div className={cn("glass-card p-6 md:p-10", className)}>
+    <div className={cn("glass-card p-4 md:p-10", className)}>
       {(title || subtitle) && (
-        <div className="mb-8 space-y-1">
-          {title && <h2 className="text-3xl font-serif italic font-bold text-slate-800 tracking-tight">{title}</h2>}
-          {subtitle && <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-slate-400">{subtitle}</p>}
+        <div className="mb-6 md:mb-8 space-y-1">
+          {title && <h2 className="text-xl md:text-3xl font-serif italic font-bold text-slate-800 dark:text-white tracking-tight">{title}</h2>}
+          {subtitle && <p className="text-[8px] md:text-[10px] font-mono uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">{subtitle}</p>}
         </div>
       )}
       {children}
@@ -1485,28 +1706,29 @@ function Card({ children, className, title, subtitle }: { children: ReactNode, c
 
 function StatCard({ label, value, subValue, icon: Icon, colorClass, trend }: { label: string, value: string | number, subValue?: string, icon: any, colorClass: string, trend?: 'up' | 'down' | 'neutral' }) {
   return (
-    <div className="glass-card p-8 space-y-6 group cursor-default shadow-2xl shadow-slate-200/20 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-24 h-24 bg-slate-50 rounded-bl-[4rem] group-hover:bg-brand/5 transition-all duration-700 -mr-6 -mt-6" />
+    <div className="glass-card p-4 md:p-8 space-y-4 md:space-y-6 group cursor-default shadow-2xl shadow-slate-200/20 relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-16 h-16 md:w-24 md:h-24 bg-slate-50 dark:bg-white/5 rounded-bl-[2rem] md:rounded-bl-[4rem] group-hover:bg-brand/5 transition-all duration-700 -mr-4 -mt-4 md:-mr-6 md:-mt-6" />
       <div className="flex justify-between items-start relative z-10">
-        <div className={cn("w-16 h-16 rounded-[2rem] flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform duration-500", colorClass)}>
-          <Icon size={28} />
+        <div className={cn("w-10 h-10 md:w-16 md:h-16 rounded-[1.2rem] md:rounded-[2rem] flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform duration-500", colorClass)}>
+          <Icon size={20} className="md:w-7 md:h-7" />
         </div>
         {trend && (
-           <div className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-xl border font-black text-[10px] uppercase tracking-widest", 
-             trend === 'up' ? "bg-emerald-50 text-emerald-600 border-emerald-100" : 
-             trend === 'down' ? "bg-rose-50 text-rose-600 border-rose-100" : "bg-slate-50 text-slate-400 border-slate-200")}>
-             {trend === 'up' && <TrendingUp size={12} />}
-             {trend === 'down' && <TrendingDown size={12} />}
-             {trend === 'neutral' && <Zap size={12} />}
+           <div className={cn("flex items-center gap-1.5 px-2 md:px-3 py-1 md:py-1.5 rounded-lg md:rounded-xl border font-black text-[8px] md:text-[10px] uppercase tracking-widest transition-colors", 
+             trend === 'up' ? "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20" : 
+             trend === 'down' ? "bg-rose-50 text-rose-600 border-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20" : 
+             "bg-slate-50 text-slate-400 border-slate-200 dark:bg-white/5 dark:text-slate-500 dark:border-white/10")}>
+             {trend === 'up' && <TrendingUp size={10} />}
+             {trend === 'down' && <TrendingDown size={10} />}
+             {trend === 'neutral' && <Zap size={10} />}
              <span className="leading-none">{trend}</span>
            </div>
         )}
       </div>
       <div className="space-y-1 relative z-10">
-        <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em]">{label}</h4>
+        <h4 className="text-[10px] md:text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em]">{label}</h4>
         <div className="flex items-baseline gap-2">
-           <span className="text-4xl font-black text-slate-900 tracking-tighter">{value}</span>
-           {subValue && <span className="text-sm font-black text-slate-400 uppercase tracking-widest">{subValue}</span>}
+           <span className="text-2xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tighter transition-colors">{value}</span>
+           {subValue && <span className="text-[10px] md:text-sm font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{subValue}</span>}
         </div>
       </div>
     </div>
@@ -1532,8 +1754,15 @@ export default function App() {
   const [prices, setPrices] = useState<FuelPrice | null>(null);
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   
   const [adminAuthForm, setAdminAuthForm] = useState({ email: '', password: '' });
+
+  useEffect(() => {
+    if (isAdminAuthMode) {
+      setAdminAuthForm(prev => ({ ...prev, email: 'unobochaganj@gov.bd' }));
+    }
+  }, [isAdminAuthMode]);
 
   const showToast = (message: string, type: 'success' | 'error' = 'success') => {
     const id = Date.now().toString();
@@ -1629,6 +1858,8 @@ export default function App() {
       }
     }
 
+    const isAdminUser = email.toLowerCase() === 'unobochaganj@gov.bd';
+    
     try {
       if (authMode === 'login') {
         await signInWithEmailAndPassword(auth, email, password);
@@ -1638,8 +1869,8 @@ export default function App() {
           userId: cred.user.uid,
           email,
           name,
-          role: 'user',
-          isApproved: false,
+          role: isAdminUser ? 'admin' : 'user',
+          isApproved: isAdminUser,
           createdAt: new Date().toISOString()
         });
       }
@@ -1651,6 +1882,12 @@ export default function App() {
   const handleAdminAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
+    
+    if (adminAuthForm.email.toLowerCase() !== 'unobochaganj@gov.bd') {
+      setAuthError(lang === 'bn' ? 'শুধুমাত্র অনুমোদিত এডমিন ইমেইল লগইন করতে পারবে' : 'Only authorized admin email can log in');
+      return;
+    }
+
     try {
       const cred = await signInWithEmailAndPassword(auth, adminAuthForm.email, adminAuthForm.password);
       await setDoc(doc(db, 'users', cred.user.uid), {
@@ -1678,705 +1915,116 @@ export default function App() {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    const provider = new GoogleAuthProvider();
+    setAuthError(null);
+    try {
+      const cred = await signInWithPopup(auth, provider);
+      const email = cred.user.email?.toLowerCase() || '';
+      const isAdminUser = email === 'unobochaganj@gov.bd';
+      
+      const userDoc = await getDoc(doc(db, 'users', cred.user.uid));
+      if (!userDoc.exists()) {
+        await setDoc(doc(db, 'users', cred.user.uid), {
+          userId: cred.user.uid,
+          email: cred.user.email,
+          name: cred.user.displayName,
+          role: isAdminUser ? 'admin' : 'user',
+          isApproved: isAdminUser,
+          createdAt: new Date().toISOString()
+        });
+      } else if (isAdminUser && userDoc.data()?.role !== 'admin') {
+        // Upgrade to admin if logging in with the designated email
+        await updateDoc(doc(db, 'users', cred.user.uid), {
+          role: 'admin',
+          isApproved: true
+        });
+      }
+    } catch (err: any) {
+      setAuthError(err.message);
+    }
+  };
+
   if (loading) {
     return (
-      <div className={cn("min-h-screen bg-technical-bg flex items-center justify-center", lang === 'bn' ? 'font-bengali' : 'font-sans')}>
+      <div className={cn("min-h-screen bg-slate-50 flex items-center justify-center", lang === 'bn' ? 'font-bengali' : 'font-sans')}>
          <div className="flex flex-col items-center gap-4">
-           <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} className="text-brand-accent"><Clock size={24} /></motion.div>
-           <span className="text-[10px] font-mono text-white/40 uppercase tracking-[0.3em] animate-pulse">Initializing Interface...</span>
+           <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} className="text-blue-900"><Clock size={24} /></motion.div>
+           <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] animate-pulse">Initializing Interface...</span>
          </div>
       </div>
     );
   }
-  
+
   if (!fbUser) {
     return (
-      <div className={cn("min-h-screen bg-slate-950 flex flex-col relative overflow-x-hidden", lang === 'bn' ? 'font-bengali' : 'font-sans')}>
-        <Header user={null} onSignOut={() => {}} lang={lang} setLang={setLang} onAuthModeChange={setAuthMode} />
-        
-        <main className="flex-1 pt-48 pb-20 relative z-10 flex flex-col items-center">
-          {/* Enhanced Background Decorative Elements */}
-          <div className="absolute top-0 left-0 w-full h-[1000px] bg-gradient-to-b from-emerald-500/10 via-[#020617] to-[#020617] pointer-events-none"></div>
-          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-brand/5 blur-[150px] -mr-96 -mt-96 rounded-full animate-pulse opacity-50" />
-          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-brand-accent/5 blur-[150px] -ml-96 -mb-96 rounded-full opacity-30" />
-          
-          <div className="w-full max-w-7xl px-8 flex flex-col lg:flex-row gap-24 items-center">
-            <div className="flex-1 space-y-8 text-center lg:text-left">
-              <div className="flex flex-col gap-10 items-center lg:items-start">
-                 <motion.div 
-                   initial={{ opacity: 0, x: -20 }}
-                   animate={{ opacity: 1, x: 0 }}
-                   className="flex items-center gap-5"
-                 >
-                   <div className="w-20 h-20 bg-brand rounded-3xl p-4 flex items-center justify-center shadow-2xl transition-all duration-700 hover:rotate-12 group">
-                      <Fuel className="text-white group-hover:scale-110 transition-transform" size={40} />
-                   </div>
-                   <div className="flex flex-col -space-y-1 text-left">
-                      <span className="text-brand text-xs font-mono uppercase tracking-[0.5em] font-black">{t.divisionName}</span>
-                      <h2 className="text-white text-5xl font-black uppercase tracking-tighter leading-none">FuelGuard</h2>
-                   </div>
-                 </motion.div>
-                 
-                 <div className="space-y-12">
-                   <motion.h1 
-                     initial={{ opacity: 0, y: 30 }}
-                     animate={{ opacity: 1, y: 0 }}
-                     transition={{ delay: 0.2 }}
-                     className="text-6xl md:text-8xl font-black text-white leading-none tracking-tighter uppercase"
-                   >
-                     <span className="block">{t.appName.split(' ')[0]}</span>
-                     <span className="text-brand official-serif lowercase block mt-2 border-l-[12px] border-brand pl-8">{t.appName.split(' ')[1]}</span>
-                   </motion.h1>
-                   <motion.p 
-                     initial={{ opacity: 0 }}
-                     animate={{ opacity: 1 }}
-                     transition={{ delay: 0.4 }}
-                     className="text-slate-200 text-xl md:text-2xl font-medium max-w-2xl leading-relaxed mx-auto lg:mx-0 drop-shadow-lg"
-                   >
-                     {t.heroDesc}
-                   </motion.p>
-                 </div>
-              </div>
+      <LandingPage 
+        lang={lang} 
+        setLang={setLang}
+        setAuthMode={setAuthMode}
+        isAdminAuthMode={isAdminAuthMode}
+        setIsAdminAuthMode={setIsAdminAuthMode}
+        handlePasswordAuth={handlePasswordAuth}
+        handleAdminAuth={handleAdminAuth}
+        authMode={authMode}
+        name={name}
+        setName={setName}
+        email={isAdminAuthMode ? adminAuthForm.email : email}
+        setEmail={(val: string) => isAdminAuthMode ? setAdminAuthForm({...adminAuthForm, email: val}) : setEmail(val)}
+        password={isAdminAuthMode ? adminAuthForm.password : password}
+        setPassword={(val: string) => isAdminAuthMode ? setAdminAuthForm({...adminAuthForm, password: val}) : setPassword(val)}
+        confirmPassword={confirmPassword}
+        setConfirmPassword={setConfirmPassword}
+        authError={authError}
+        t={t}
+        pumps={pumps}
+        handleGoogleSignIn={handleGoogleSignIn}
+        Header={Header}
+        isDark={isDark}
+        onToggleTheme={() => setIsDark(!isDark)}
+      />
+    );
+  }
 
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.6 }}
-                className="flex flex-wrap gap-8 justify-center lg:justify-start"
-              >
-                 <button className="btn-primary flex items-center gap-4 group px-10 h-20 text-lg">
-                    <span>{t.register}</span>
-                    <ArrowUpRight size={24} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                 </button>
-                 <button className="btn-secondary bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20 px-10 h-20 text-lg font-bold">
-                   <FileText size={24} className="text-brand" />
-                   {t.userManual}
-                 </button>
-              </motion.div>
+/* OLD LANDING PAGE REMOVED */
 
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
-                className="bg-brand/10 border-2 border-brand/30 p-12 rounded-[4rem] relative overflow-hidden backdrop-blur-3xl shadow-2xl group max-w-3xl"
-              >
-                 <div className="absolute top-0 right-0 w-64 h-64 bg-brand/20 blur-[100px] -mr-32 -mt-32 rounded-full animate-pulse" />
-                 <div className="flex items-start gap-10 relative z-10 text-left">
-                    <div className="w-20 h-20 rounded-[2.5rem] bg-brand flex items-center justify-center text-white shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-2xl shadow-brand/40">
-                       <AlertTriangle size={40} />
-                    </div>
-                    <div className="space-y-4">
-                      <h4 className="text-brand font-black text-sm uppercase tracking-[0.6em]">{t.nbTitle}</h4>
-                      <p className="text-white text-xl md:text-2xl leading-relaxed font-bold">
-                        {t.nbText}
-                      </p>
-                    </div>
-                 </div>
-              </motion.div>
-            </div>
+// CLEANUP COMPLETE
 
-          {/* Right Content - Auth Form */}
-          <div className="w-full max-w-lg relative">
-             <div className="absolute -top-20 -right-20 w-64 h-64 bg-brand/20 blur-[100px] rounded-full"></div>
-             <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-brand-accent/20 blur-[100px] rounded-full"></div>
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white/10 backdrop-blur-3xl border border-white/20 rounded-[40px] p-8 md:p-14 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] relative overflow-hidden"
-            >
-              {/* Subtle tech background element */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-brand/10 blur-[60px] -mr-16 -mt-16 rounded-full" />
-              <div className="absolute bottom-0 left-0 w-32 h-32 bg-brand-accent/5 blur-[60px] -ml-16 -mb-16 rounded-full" />
-
-              <div className="text-center space-y-3 mb-10 relative">
-                <motion.div
-                  key={authMode}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <h2 className="text-4xl font-black text-white tracking-tight">
-                    {authMode === 'login' ? t.welcomeBack : t.getQrWithOtp}
-                  </h2>
-                  <p className="text-white/40 text-[11px] font-mono uppercase tracking-[0.3em] font-bold mt-2">
-                    {authMode === 'login' ? 'Authentication Required' : 'Citizen Registration Portal'}
-                  </p>
-                </motion.div>
-              </div>
-
-              <div className="bg-black/20 p-1.5 rounded-2xl border border-white/5 flex mb-10 overflow-hidden backdrop-blur-md">
-                <button 
-                  onClick={() => { setAuthMode('login'); setIsAdminAuthMode(false); }}
-                  className={cn(
-                    "flex-1 py-3.5 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 rounded-xl", 
-                    (authMode === 'login' && !isAdminAuthMode) ? "bg-white text-technical-bg shadow-[0_8px_16px_rgba(255,255,255,0.1)] scale-100" : "text-white/40 hover:text-white/70"
-                  )}
-                >
-                  {t.signIn}
-                </button>
-                <button 
-                  onClick={() => { setAuthMode('signup'); setIsAdminAuthMode(false); }}
-                  className={cn(
-                    "flex-1 py-3.5 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 rounded-xl", 
-                    authMode === 'signup' ? "bg-white text-technical-bg shadow-[0_8px_16px_rgba(255,255,255,0.1)] scale-100" : "text-white/40 hover:text-white/70"
-                  )}
-                >
-                  {t.register}
-                </button>
-              </div>
-
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={isAdminAuthMode ? 'admin' : authMode}
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -10 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {isAdminAuthMode ? (
-                    <form onSubmit={handleAdminAuth} className="space-y-6">
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] ml-1">{t.idPlaceholder}</label>
-                        <div className="relative group">
-                          <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-brand transition-colors" size={18} />
-                          <input 
-                            type="email" 
-                            required
-                            className="w-full bg-white/5 text-white border border-white/10 rounded-2xl py-5 pl-14 pr-6 font-bold placeholder:text-white/10 focus:bg-white focus:text-technical-bg focus:ring-4 focus:ring-brand/20 outline-none transition-all duration-300"
-                            placeholder="admin@mopa.gov.bd"
-                            value={adminAuthForm.email || ''}
-                            onChange={e => setAdminAuthForm(prev => ({ ...prev, email: e.target.value }))}
-                          />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] ml-1">{t.passPlaceholder}</label>
-                        <div className="relative group">
-                          <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-brand transition-colors" size={18} />
-                          <input 
-                            type="password" 
-                            required
-                            className="w-full bg-white/5 text-white border border-white/10 rounded-2xl py-5 pl-14 pr-6 font-bold placeholder:text-white/10 focus:bg-white focus:text-technical-bg focus:ring-4 focus:ring-brand/20 outline-none transition-all duration-300"
-                            placeholder="••••••••"
-                            value={adminAuthForm.password || ''}
-                            onChange={e => setAdminAuthForm(prev => ({ ...prev, password: e.target.value }))}
-                          />
-                        </div>
-                      </div>
-                      {authError && <p className="text-brand-accent text-[10px] font-black uppercase tracking-widest text-center">{authError}</p>}
-                      <button type="submit" className="w-full bg-brand py-6 rounded-2xl text-white font-black uppercase tracking-[0.3em] shadow-[0_20px_40px_-12px_rgba(255,59,48,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all text-[11px]">
-                        {t.authorize}
-                      </button>
-                      <button type="button" onClick={() => setIsAdminAuthMode(false)} className="w-full text-white/20 text-[9px] font-black uppercase tracking-[0.3em] hover:text-white transition-all py-2">
-                        {t.backToUser}
-                      </button>
-                    </form>
-                  ) : (
-                    <form onSubmit={handlePasswordAuth} className="space-y-6">
-                      {authMode === 'signup' && (
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] ml-1">{t.fullName}</label>
-                          <div className="relative group">
-                            <UserIcon className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-brand transition-colors" size={18} />
-                            <input 
-                              type="text" 
-                              required
-                              className="w-full bg-white/5 text-white border border-white/10 rounded-2xl py-5 pl-14 pr-6 font-bold placeholder:text-white/10 focus:bg-white focus:text-technical-bg focus:ring-4 focus:ring-brand/20 outline-none transition-all duration-300"
-                              placeholder={lang === 'bn' ? 'আপনার পূর্ণ নাম' : 'Enter Official Name'}
-                              value={name}
-                              onChange={e => setName(e.target.value)}
-                            />
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] ml-1">{t.email}</label>
-                        <div className="relative group">
-                          <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-brand transition-colors" size={18} />
-                          <input 
-                            type="email" 
-                            required
-                            className="w-full bg-white/5 text-white border border-white/10 rounded-2xl py-5 pl-14 pr-6 font-bold placeholder:text-white/10 focus:bg-white focus:text-technical-bg focus:ring-4 focus:ring-brand/20 outline-none transition-all duration-300"
-                            placeholder="citizen@gov.bd"
-                            value={email}
-                            onChange={e => setEmail(e.target.value)}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] ml-1">{t.password}</label>
-                        <div className="relative group">
-                          <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-brand transition-colors" size={18} />
-                          <input 
-                            type="password" 
-                            required
-                            className="w-full bg-white/5 text-white border border-white/10 rounded-2xl py-5 pl-14 pr-6 font-bold placeholder:text-white/10 focus:bg-white focus:text-technical-bg focus:ring-4 focus:ring-brand/20 outline-none transition-all duration-300"
-                            placeholder="••••••••"
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
-                          />
-                        </div>
-                      </div>
-
-                      {authMode === 'signup' && (
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] ml-1">{t.confirmPassword}</label>
-                          <div className="relative group">
-                            <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-brand transition-colors" size={18} />
-                            <input 
-                              type="password" 
-                              required
-                              className="w-full bg-white/5 text-white border border-white/10 rounded-2xl py-5 pl-14 pr-6 font-bold placeholder:text-white/10 focus:bg-white focus:text-technical-bg focus:ring-4 focus:ring-brand/20 outline-none transition-all duration-300"
-                              placeholder="••••••••"
-                              value={confirmPassword}
-                              onChange={e => setConfirmPassword(e.target.value)}
-                            />
-                          </div>
-                        </div>
-                      )}
-
-                      {authMode === 'login' && (
-                        <div className="flex justify-end pr-1">
-                          <button type="button" className="text-brand-accent text-[9px] font-black uppercase tracking-widest hover:text-white transition-colors">{t.forgotPassword}</button>
-                        </div>
-                      )}
-
-                      {authError && <p className="text-brand-accent text-[10px] font-black uppercase tracking-widest text-center">{authError}</p>}
-                      
-                      <button type="submit" className="w-full bg-brand py-6 rounded-2xl text-white font-black uppercase tracking-[0.3em] shadow-[0_20px_40px_-12px_rgba(255,59,48,0.3)] hover:bg-brand/90 hover:scale-[1.01] active:scale-[0.98] transition-all text-[11px] mt-2">
-                        {authMode === 'login' ? t.signIn : t.completeRegistration}
-                      </button>
-
-                      <div className="pt-10 flex flex-col items-center gap-6">
-                        <div className="w-full h-px bg-white/5 relative">
-                          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#1a1a1a] px-4 text-[8px] font-mono text-white/20 uppercase tracking-[0.4em]">Official Portal</span>
-                        </div>
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play" className="h-12 opacity-40 hover:opacity-100 transition-all cursor-pointer grayscale hover:grayscale-0" />
-                      </div>
-                    </form>
-                  )}
-                </motion.div>
-              </AnimatePresence>
-            </motion.div>
-            
-            <div className="mt-8 text-center text-white/30 font-mono text-[9px] uppercase tracking-[0.3em]">
-               System Node: UNO_Bochaganj_Cluster_v2 // Encrypted
-            </div>
-          </div>
+  // If user exists but fields are empty, show completion form
+  if (appUser && (!appUser.nid || !appUser.vehicleNumber)) {
+    return (
+      <div className={cn("min-h-screen flex flex-col transition-colors duration-500", 
+        isDark ? "bg-[#020617] text-white dark" : "bg-slate-50 text-slate-800",
+        lang === 'bn' ? 'font-bengali' : 'font-sans')}>
+        <Header 
+          user={appUser} 
+          onSignOut={() => signOut(auth)} 
+          lang={lang} 
+          setLang={setLang} 
+          onTabChange={() => {}}
+          activeTab=""
+          isDark={isDark}
+          onToggleTheme={() => setIsDark(!isDark)}
+        />
+        <div className="flex-1 pt-32 pb-20 overflow-y-auto flex items-center justify-center">
+           <RegistrationForm onRegister={handleRegisterProfile} lang={lang} isDark={isDark} />
         </div>
-      </main>
-
-        <div className="relative z-10 bg-[#020617] mt-[-1px]">
-          {/* Section Connector Decorative Line */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[2px] h-20 bg-gradient-to-b from-brand to-transparent"></div>
-          
-          {/* Main Operational Container */}
-          <section id="operational-guide" className="py-40 px-8 lg:px-20 border-y border-white/5 relative overflow-hidden">
-            {/* Deep Space Background Interface */}
-            <div className="absolute inset-0 pointer-events-none">
-               <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-brand/10 to-transparent"></div>
-               <div className="absolute bottom-0 left-0 w-full h-[500px] bg-gradient-to-t from-emerald-500/5 to-transparent"></div>
-               
-               {/* Tech Grid Overlay */}
-               <div className="absolute inset-0 opacity-[0.05]" 
-                    style={{ 
-                      backgroundImage: 'linear-gradient(rgba(59, 130, 246, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.2) 1px, transparent 1px)', 
-                      backgroundSize: '100px 100px' 
-                    }}>
-               </div>
-               
-               {/* Floating HUD Circles */}
-               <div className="absolute top-1/4 -left-20 w-96 h-96 bg-brand/10 blur-[100px] rounded-full animate-pulse"></div>
-               <div className="absolute bottom-1/4 -right-20 w-[500px] h-[500px] bg-brand-accent/5 blur-[120px] rounded-full"></div>
-            </div>
-            
-            <div className="max-w-7xl mx-auto space-y-32 relative z-10">
-              <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 border-l-[10px] border-brand pl-12">
-                <div className="space-y-8">
-                  <div className="flex items-center gap-6">
-                    <div className="h-[2px] w-16 bg-brand"></div>
-                    <span className="text-[12px] font-mono uppercase tracking-[0.8em] text-brand font-black">SYSTEM_PROTOCOL_LAYER</span>
-                  </div>
-                  <h2 className="text-6xl md:text-9xl font-black text-white tracking-tighter leading-none uppercase italic">
-                    {t.operationalWorkflow}
-                  </h2>
-                  <p className="text-slate-300 font-mono text-base max-w-2xl uppercase tracking-widest leading-loose font-bold bg-white/5 p-6 rounded-2xl border border-white/5">
-                    <span className="text-brand">ACCESS_L5:</span> Centralized distribution matrix for regional fuel reserves. Real-time synchronization across all Tier-1 infrastructure nodes.
-                  </p>
-                </div>
-              </div>
-
-              {/* Station Terminal Matrix - COMPLETELY REDESIGNED */}
-              <div className="space-y-12">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full border border-brand/30 flex items-center justify-center text-brand">
-                      <Globe size={24} className="animate-pulse" />
-                    </div>
-                    <div>
-                      <h3 className="text-2xl font-black text-white uppercase tracking-tighter">{t.stationTerminals}</h3>
-                      <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest font-black">INFRASTRUCTURE_NODES_STATUS: ACTIVE</p>
-                    </div>
-                  </div>
-                  <div className="hidden md:flex gap-2">
-                    {[1, 2, 3, 4].map(n => <div key={n} className="w-2 h-2 rounded-full bg-brand/20"></div>)}
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {pumps.map((pump, idx) => (
-                    <motion.div 
-                      key={pump.pumpId}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: idx * 0.05 }}
-                      className="group relative"
-                    >
-                      {/* Terminal Card - REDESIGNED FOR HIGH CONTRAST TECH AESTHETIC */}
-                      <div className="relative z-10 bg-slate-900/40 backdrop-blur-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] rounded-3xl overflow-hidden group-hover:-translate-y-2 transition-all duration-500 border border-white/10 group-hover:border-brand/60">
-                        {/* Header - Industrial Stealth */}
-                        <div className="bg-gradient-to-r from-slate-950 to-slate-900 p-6 flex justify-between items-center border-b border-white/5">
-                          <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-brand/10 border border-brand/30 flex items-center justify-center text-brand shadow-[0_0_20px_rgba(59,130,246,0.3)] group-hover:bg-brand group-hover:text-white transition-all">
-                              <Fuel size={18} />
-                            </div>
-                            <div className="flex flex-col">
-                              <span className="text-[11px] font-black tracking-widest text-brand leading-none">NODE_0{idx + 1}</span>
-                              <span className="text-[9px] font-mono text-slate-500 mt-1 uppercase">Operational_Auth</span>
-                            </div>
-                          </div>
-                          <div className="flex flex-col items-end">
-                            <div className="flex items-center gap-2">
-                              <span className="relative flex h-2 w-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-brand"></span>
-                              </span>
-                              <span className="text-[10px] font-black text-white tracking-widest">LIVE</span>
-                            </div>
-                            <span className="text-[8px] font-mono text-slate-500 mt-1">S_ID: {pump.pumpId}</span>
-                          </div>
-                        </div>
-
-                        {/* Body - High Contrast Content */}
-                        <div className="p-8 space-y-10">
-                          <div className="space-y-2">
-                            <h4 className="text-2xl font-black text-white uppercase leading-none tracking-tighter group-hover:text-brand transition-colors">{pump.name}</h4>
-                            <div className="flex items-center gap-2">
-                              <div className="px-2 py-0.5 rounded bg-brand/5 border border-brand/20">
-                                <span className="text-[9px] font-black text-brand uppercase tracking-widest">{pump.location}</span>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="space-y-8">
-                            {/* Address - Enhanced Legibility */}
-                            <div className="space-y-2 group/info">
-                              <div className="flex items-center gap-3">
-                                <MapPin size={12} className="text-brand shrink-0" />
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{t.addressLabel}</span>
-                              </div>
-                              <div className="bg-white/5 rounded-2xl p-4 border border-white/5 group-hover/info:bg-white/10 transition-colors">
-                                <p className={cn(
-                                  "text-[12px] leading-relaxed text-slate-200 font-bold",
-                                  lang === 'bn' ? "font-bengali" : "font-sans"
-                                )}>
-                                  {pump.address || 'MANIFEST_PENDING_AUTH...'}
-                                </p>
-                              </div>
-                            </div>
-
-                            {/* Sync Info - Data Visualizer */}
-                            <div className="space-y-3">
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                  <Clock size={12} className="text-brand" />
-                                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{t.syncEstLabel}</span>
-                                </div>
-                                <span className="text-[11px] font-black text-brand font-mono">{pump.syncEst || '15M'}</span>
-                              </div>
-                              <div className="h-2 bg-slate-950 rounded-full p-0.5 border border-white/5">
-                                <motion.div 
-                                  initial={{ width: 0 }}
-                                  whileInView={{ width: '85%' }}
-                                  className="h-full bg-gradient-to-r from-brand/40 to-brand rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"
-                                />
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Footer / Map Link - Command Buttons */}
-                          <div className="pt-8 flex items-center justify-between border-t border-white/5">
-                            <div className="flex items-center gap-3">
-                              <div className="flex -space-x-3">
-                                {[1, 2, 3].map(p => (
-                                  <div key={p} className="w-8 h-8 rounded-full border-2 border-slate-900 bg-slate-800 flex items-center justify-center shadow-lg">
-                                    <UserIcon size={12} className="text-slate-400" />
-                                  </div>
-                                ))}
-                              </div>
-                              <div className="flex flex-col">
-                                <span className="text-[9px] font-black text-slate-400 uppercase">Deployed</span>
-                                <span className="text-[10px] font-black text-white leading-none">STAFF_03</span>
-                              </div>
-                            </div>
-                            
-                            {pump.mapUrl && (
-                              <a 
-                                href={pump.mapUrl} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="group/nav flex items-center gap-3 bg-brand p-1 pr-4 rounded-full text-white hover:bg-white hover:text-brand transition-all duration-300 shadow-xl shadow-brand/20"
-                              >
-                                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center group-hover/nav:bg-brand/10 group-hover/nav:text-brand">
-                                  <Navigation size={16} />
-                                </div>
-                                <span className="text-[11px] font-black uppercase tracking-widest">
-                                  {lang === 'en' ? 'NAV_MAP' : 'নেভিগেশন'}
-                                </span>
-                              </a>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Card Shadow/Effect */}
-                      <div className="absolute inset-0 bg-brand/20 blur-2xl rounded-3xl opacity-0 group-hover:opacity-40 transition-opacity -z-10"></div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Dynamic Step Visualization */}
-              <div className="relative">
-                <div className="absolute top-1/2 left-0 w-full h-[2px] bg-white/5 -translate-y-1/2 hidden lg:block"></div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
-                  {[
-                    { step: '01', title: t.step1Title, desc: t.step1Desc, icon: UserCheck, color: 'brand' },
-                    { step: '02', title: t.step2Title, desc: t.step2Desc, icon: QrCode, color: 'emerald-500' },
-                    { step: '03', title: t.step3Title, desc: t.step3Desc, icon: Zap, color: 'amber-500' }
-                  ].map((item, idx) => (
-                    <motion.div 
-                      key={idx}
-                      whileHover={{ scale: 1.02 }}
-                      className="bg-white/5 backdrop-blur-xl border border-white/10 p-10 rounded-[40px] space-y-8 group transition-all"
-                    >
-                      <div className="flex justify-between items-start">
-                        <span className="text-5xl font-black text-white opacity-10 group-hover:opacity-30 transition-opacity">{item.step}</span>
-                        <div className={cn("w-16 h-16 rounded-2xl flex items-center justify-center text-white shadow-2xl", `bg-${item.color}`, item.color === 'brand' ? 'bg-brand' : '')}>
-                          <item.icon size={28} />
-                        </div>
-                      </div>
-                      <div className="space-y-4">
-                        <h3 className="text-xl font-black text-white uppercase tracking-tight">{item.title}</h3>
-                        <p className="text-slate-400 text-sm leading-relaxed font-medium">{item.desc}</p>
-                      </div>
-                      <div className={cn("h-1 w-0 group-hover:w-full transition-all duration-700 rounded-full opacity-60", item.color === 'brand' ? 'bg-brand' : `bg-${item.color}`)}></div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Enhanced Requirements Section - MOVED TO SAME WRAPPER */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 pt-8">
-                <div className="bg-white/5 backdrop-blur-md rounded-[40px] border border-white/10 p-10 space-y-6 shadow-xl shadow-black/40 relative overflow-hidden group hover:bg-white/[0.07] transition-all">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-bl-[100px] -mr-10 -mt-10 group-hover:bg-brand/10 transition-colors"></div>
-                  <div className="space-y-6 relative z-10">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-brand/10 border border-brand/30 rounded-2xl flex items-center justify-center text-brand">
-                        <FileCheck size={20} />
-                      </div>
-                      <h3 className="text-3xl font-black text-white uppercase tracking-tight italic">{t.requirementsTitle}</h3>
-                    </div>
-                    <div className="h-1 w-full bg-slate-800 rounded-full overflow-hidden">
-                       <div className="h-full w-1/3 bg-brand shadow-[0_0_10px_rgba(59,130,246,0.6)]"></div>
-                    </div>
-                  </div>
-                  <ul className="space-y-6 relative z-10">
-                    {[t.reqItem1, t.reqItem2, t.reqItem3, t.reqItem4, t.reqItem5].map((req, i) => (
-                      <li key={i} className="flex gap-5 items-start group/item">
-                        <div className="mt-1.5 w-6 h-6 rounded-lg bg-slate-900 border border-white/10 flex items-center justify-center shrink-0 group-hover/item:border-brand transition-all">
-                           <div className="w-1.5 h-1.5 bg-brand rounded-sm rotate-45 scale-0 group-hover/item:scale-100 transition-transform"></div>
-                        </div>
-                        <span className={cn("text-base leading-relaxed text-slate-300 font-bold", lang === 'bn' ? "font-bengali" : "font-mono")}>
-                           {req}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="bg-slate-900/50 backdrop-blur-md rounded-[40px] p-10 space-y-6 shadow-2xl shadow-black/20 relative overflow-hidden border border-white/5">
-                  <div className="absolute bottom-0 right-0 w-64 h-64 bg-brand/10 blur-3xl rounded-full -mb-32 -mr-32"></div>
-                  <div className="space-y-6 relative z-10">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center justify-center text-emerald-500">
-                        <Globe size={20} />
-                      </div>
-                      <h3 className="text-3xl font-black text-white uppercase tracking-tight italic">{t.appLocationTitle}</h3>
-                    </div>
-                    <div className="h-1 w-full bg-slate-800 rounded-full overflow-hidden">
-                       <div className="h-full w-2/3 bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.6)]"></div>
-                    </div>
-                  </div>
-                  <div className="space-y-4 relative z-10">
-                    {[
-                      { icon: MapPin, text: t.locMunicipality, color: "text-brand", bg: "bg-brand/5" },
-                      { icon: ShieldCheck, text: t.locUnion123, color: "text-emerald-400", bg: "bg-emerald-500/5" },
-                      { icon: AlertCircle, text: t.locUnion456, color: "text-amber-400", bg: "bg-amber-500/5" }
-                    ].map((loc, i) => (
-                      <div key={i} className={cn("flex items-center gap-6 p-5 rounded-3xl border border-white/5 hover:border-white/20 transition-all", loc.bg)}>
-                        <div className="w-14 h-14 flex items-center justify-center bg-slate-950 text-white rounded-2xl shadow-inner border border-white/5 group-hover:scale-110 transition-transform">
-                           <loc.icon size={24} className={loc.color} />
-                        </div>
-                        <div className="flex flex-col text-left">
-                          <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">Station_Jurisdiction</span>
-                          <span className={cn("text-lg font-black tracking-tighter text-slate-200 uppercase", lang === 'bn' ? "font-bengali" : "font-sans")}>
-                            {loc.text}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Informational Section - Immersive */}
-          <section className="bg-technical-ink text-white py-32 px-8 lg:px-20 relative overflow-hidden">
-            <div className="absolute inset-0 opacity-10 pointer-events-none">
-              <div className="absolute w-[800px] h-[800px] bg-brand-accent/20 blur-[160px] rounded-full -top-96 -right-96"></div>
-              <div className="absolute w-[600px] h-[600px] bg-indigo-500/10 blur-[140px] rounded-full -bottom-48 -left-48"></div>
-            </div>
-
-            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 relative z-10 text-left">
-              <div className="space-y-8">
-                <div className="space-y-6">
-                  <div className="flex items-center gap-4">
-                    <span className="w-12 h-px bg-white/20"></span>
-                    <span className="text-[11px] font-mono uppercase tracking-[0.4em] text-white/40">Network Architecture</span>
-                  </div>
-                  <h2 className="text-5xl md:text-6xl font-serif italic font-bold leading-tight tracking-tighter">{t.monitoringNode}</h2>
-                  <p className="text-white/50 text-lg leading-relaxed font-light max-w-lg">
-                    {t.monitoringDesc}
-                  </p>
-                </div>
-
-                <div className="space-y-4 font-mono">
-                  {(pumps.length > 0 ? pumps : [{ name: 'North Hub' }, { name: 'South Point' }, { name: 'East Gate' }, { name: 'West Port' }]).slice(0, 4).map((pump, idx) => (
-                    <div key={idx} className="flex items-center gap-6 py-4 border-b border-white/5 group hover:border-white/20 transition-colors">
-                      <span className="text-white/20 text-[10px]">0{idx + 1}</span>
-                      <div className="flex-1 flex items-center justify-between">
-                        <div className="flex flex-col">
-                          <span className="text-sm uppercase tracking-widest font-bold">Station: {pump.name}</span>
-                          {(pump as any).mapUrl && (
-                            <a 
-                              href={(pump as any).mapUrl} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-[9px] text-brand hover:underline flex items-center gap-1 mt-1 font-bold"
-                            >
-                              <ExternalLink size={10} /> View Map
-                            </a>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <span className="text-[10px] text-brand-accent font-black animate-pulse">●</span>
-                          <span className="text-[10px] text-white/40 uppercase tracking-tighter">Active Sync</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="relative">
-                <div className="aspect-square border border-white/10 bg-white/5 flex flex-col items-center justify-center p-12 text-center group">
-                  <div className="w-px h-full bg-white/10 absolute top-0 left-1/2"></div>
-                  <div className="w-full h-px bg-white/10 absolute top-1/2 left-0"></div>
-                  
-                  <div className="relative z-10 space-y-6">
-                    <div className="w-20 h-20 border border-white/20 rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-500">
-                      <ShieldCheck size={32} className="text-brand-accent" />
-                    </div>
-                    <div className="space-y-2">
-                      <p className="text-3xl font-serif italic text-white">{t.globalEfficiency}</p>
-                      <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">{t.uptime}</p>
-                    </div>
-                    <div className="grid grid-cols-2 gap-10 pt-6">
-                      <div className="text-center">
-                        <p className="text-2xl font-black">99.9%</p>
-                        <p className="text-[9px] font-mono uppercase tracking-widest text-white/40">Sync Rate</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-2xl font-black">2.4ms</p>
-                        <p className="text-[9px] font-mono uppercase tracking-widest text-white/40">Latency</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
-
-        {/* Footer Area */}
-        <footer id="support-node" className="relative z-10 py-20 px-6 border-t border-white/5 bg-technical-bg/50">
-          <div className="container mx-auto flex flex-col items-center gap-10">
-            <div className="w-20 h-20 bg-white rounded-full p-2 flex items-center justify-center shadow-2xl border border-technical-line">
-              <img src="https://scontent.fdac22-2.fna.fbcdn.net/v/t39.30808-6/272973958_300659878763472_3113526947061015013_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=4p2JAvH_V80Q7kNvwFUadwf&_nc_oc=AdrX7Z_8acCYQ_4FFVhlGV-t6qUi1eRUlorlkGlKZuRH7F46AEiWGuqCAPS4FGZIfiY&_nc_zt=23&_nc_ht=scontent.fdac22-2.fna&_nc_gid=9ypYlGD5YuNZHuNFoLNvrQ&_nc_ss=7b2a8&oh=00_Af2NfhmojOoIpoxPaRCLdwZuSicUReO6HD2I51XxlHJwUg&oe=69F9594F" className="w-full h-full object-contain" alt="Division Logo" />
-            </div>
-            <h3 className="text-white text-3xl font-black text-center tracking-tight">
-              {t.divisionName}
-            </h3>
-            
-            <div className="flex flex-wrap justify-center gap-8 text-[11px] font-bold uppercase tracking-widest text-white/50">
-               <a href="#" className="hover:text-white transition-colors">{t.consumerManual}</a>
-               <a href="#" className="hover:text-white transition-colors">{t.privacyPolicy}</a>
-               <a href="#" onClick={() => setIsAdminAuthMode(true)} className="hover:text-brand-accent transition-colors">{t.adminLogin}</a>
-            </div>
-
-            <p className="text-white/30 text-[10px] font-mono tracking-widest">
-              {t.copyright}
-            </p>
-          </div>
-        </footer>
-        
-        <ToastContainer toasts={toasts} onRemove={(id) => setToasts(prev => prev.filter(t => t.id !== id))} />
-
-        <AnimatePresence>
-          {showScrollTop && (
-            <motion.button
-              initial={{ opacity: 0, scale: 0.5, y: 50 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.5, y: 50 }}
-              onClick={scrollToTop}
-              className="fixed bottom-10 right-10 z-[100] w-14 h-14 bg-brand text-white rounded-2xl flex items-center justify-center shadow-[0_20px_40px_rgba(59,130,246,0.3)] border border-white/20 hover:bg-slate-900 transition-all duration-300 group"
-              title="Back to Top"
-            >
-              <div className="absolute inset-0 bg-brand rounded-2xl group-hover:blur-xl opacity-20 transition-all"></div>
-              <ArrowUp size={24} className="relative z-10 group-hover:-translate-y-1 transition-transform" />
-            </motion.button>
-          )}
-        </AnimatePresence>
       </div>
     );
   }
 
-  // If user exists but fields are empty, show completion form
-  if (appUser && (!appUser.nid || !appUser.vehicleNumber)) {
-    return <RegistrationForm onRegister={handleRegisterProfile} lang={lang} />;
+  // If user is not approved, show pending approval screen
+  if (appUser && !appUser.isApproved) {
+    return <PendingApprovalView lang={lang} isDark={isDark} onSignOut={() => signOut(auth)} />;
   }
 
   // Fallback for missing user profile (shorter loading)
   if (!appUser) {
     return (
-        <div className={cn("min-h-screen bg-technical-bg flex items-center justify-center", lang === 'bn' ? 'font-bengali' : 'font-sans')}>
+        <div className={cn("min-h-screen bg-slate-50 flex items-center justify-center", lang === 'bn' ? 'font-bengali' : 'font-sans')}>
            <div className="flex flex-col items-center gap-4">
-             <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} className="text-brand-accent"><Clock size={24} /></motion.div>
-             <span className="text-[10px] font-mono text-white/40 uppercase tracking-[0.3em] animate-pulse">Syncing Registry...</span>
+             <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} className="text-blue-900"><Clock size={24} /></motion.div>
+             <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] animate-pulse">Syncing Registry...</span>
            </div>
         </div>
     );
@@ -2386,19 +2034,22 @@ export default function App() {
   const isManager = appUser.role === 'manager';
 
   return (
-    <div className={cn("min-h-screen bg-slate-50 flex overflow-hidden", lang === 'bn' ? 'font-bengali' : 'font-sans')}>
-      <Sidebar 
+    <div className={cn("min-h-screen flex flex-col transition-colors duration-500", 
+      isDark ? "bg-[#020617] text-white dark" : "bg-slate-50 text-slate-800",
+      lang === 'bn' ? 'font-bengali' : 'font-sans')}>
+      <Header 
         user={appUser} 
-        activeTab={activeTabID} 
-        setActiveTab={setActiveTabID} 
-        lang={lang} 
         onSignOut={() => signOut(auth)} 
+        lang={lang} 
+        setLang={setLang} 
+        activeTab={activeTabID}
+        onTabChange={setActiveTabID}
+        isDark={isDark}
+        onToggleTheme={() => setIsDark(!isDark)}
       />
       
-      <div className="flex-1 flex flex-col h-screen overflow-y-auto ml-64">
-        <TopBar user={appUser} lang={lang} setLang={setLang} onProfileClick={() => setShowProfileModal(true)} onSignOut={() => signOut(auth)} />
-        
-        <main className="p-8">
+      <div className="flex-1 pt-24 md:pt-32 pb-10 md:pb-20">
+        <main className="max-w-7xl mx-auto px-4 md:px-12">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTabID}
@@ -2407,18 +2058,30 @@ export default function App() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
             >
-              {activeTabID === 'dashboard' && <DashboardUser user={appUser} lang={lang} onProfileClick={() => setShowProfileModal(true)} />}
-              {activeTabID === 'pending' && isAdmin && <DashboardAdmin pumps={pumps} prices={prices} lang={lang} showToast={showToast} activeView="pending" />}
-              {activeTabID === 'users' && isAdmin && <DashboardAdmin pumps={pumps} prices={prices} lang={lang} showToast={showToast} activeView="users" />}
-              {activeTabID === 'pricing' && isAdmin && <DashboardAdmin pumps={pumps} prices={prices} lang={lang} showToast={showToast} activeView="prices" />}
-              {activeTabID === 'stations' && isAdmin && <DashboardAdmin pumps={pumps} prices={prices} lang={lang} showToast={showToast} activeView="mgmt" />}
-              {activeTabID === 'stats' && isAdmin && <DashboardAdmin pumps={pumps} prices={prices} lang={lang} showToast={showToast} activeView="stats" />}
-              {activeTabID === 'transactions' && <TransactionHistory lang={lang} />}
-              {activeTabID === 'scanner' && (isAdmin || isManager) && <DashboardManager pumps={pumps} prices={prices} lang={lang} />}
+              {activeTabID === 'dashboard' && <DashboardUser user={appUser} lang={lang} onProfileClick={() => setShowProfileModal(true)} isDark={isDark} />}
+              {activeTabID === 'history' && <TransactionHistory lang={lang} isDark={isDark} />}
+              {activeTabID === 'profile' && <UserProfileView user={appUser} lang={lang} isDark={isDark} />}
+              {activeTabID === 'pending' && isAdmin && <DashboardAdmin pumps={pumps} prices={prices} lang={lang} showToast={showToast} activeView="pending" isDark={isDark} />}
+              {activeTabID === 'users' && isAdmin && <DashboardAdmin pumps={pumps} prices={prices} lang={lang} showToast={showToast} activeView="users" isDark={isDark} />}
+              {activeTabID === 'pricing' && isAdmin && <DashboardAdmin pumps={pumps} prices={prices} lang={lang} showToast={showToast} activeView="prices" isDark={isDark} />}
+              {activeTabID === 'stations' && isAdmin && <DashboardAdmin pumps={pumps} prices={prices} lang={lang} showToast={showToast} activeView="mgmt" isDark={isDark} />}
+              {activeTabID === 'stats' && isAdmin && <DashboardAdmin pumps={pumps} prices={prices} lang={lang} showToast={showToast} activeView="stats" isDark={isDark} />}
+              {activeTabID === 'transactions' && <TransactionHistory lang={lang} isDark={isDark} />}
+              {activeTabID === 'scanner' && (isAdmin || isManager) && <DashboardManager pumps={pumps} prices={prices} lang={lang} isDark={isDark} />}
             </motion.div>
           </AnimatePresence>
         </main>
       </div>
+
+      <footer className={cn("py-8 md:py-12 border-t transition-colors duration-300", isDark ? "bg-slate-900 border-white/10" : "bg-white border-slate-200")}>
+        <div className="max-w-7xl mx-auto px-6 text-center space-y-4 md:space-y-6">
+          <div className={cn("w-12 h-12 md:w-16 md:h-16 rounded-full p-1 mx-auto border overflow-hidden transition-colors", isDark ? "bg-white/5 border-white/10" : "bg-white border-slate-100 shadow-sm")}>
+            <img src="https://scontent.fdac22-2.fna.fbcdn.net/v/t39.30808-6/272973958_300659878763472_3113526947061015013_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=4p2JAvH_V80Q7kNvwFUadwf&_nc_oc=AdrX7Z_8acCYQ_4FFVhlGV-t6qUi1eRUlorlkGlKZuRH7F46AEiWGuqCAPS4FGZIfiY&_nc_zt=23&_nc_ht=scontent.fdac22-2.fna&_nc_gid=9ypYlGD5YuNZHuNFoLNvrQ&_nc_ss=7b2a8&oh=00_Af2NfhmojOoIpoxPaRCLdwZuSicUReO6HD2I51XxlHJwUg&oe=69F9594F" className="w-full h-full object-contain" alt="Logo" loading="lazy" />
+          </div>
+          <p className={cn("font-bold text-lg md:text-xl transition-colors", isDark ? "text-white" : "text-slate-800")}>{t.divisionName}</p>
+          <p className={cn("text-[10px] md:text-xs font-medium tracking-widest uppercase transition-colors opacity-60", isDark ? "text-slate-500" : "text-slate-400")}>{t.copyright}</p>
+        </div>
+      </footer>
 
       <ToastContainer toasts={toasts} onRemove={(id) => setToasts(prev => prev.filter(t => t.id !== id))} />
 
@@ -2461,163 +2124,366 @@ export default function App() {
 
 // --- Sub-Components ---
 
-function RegistrationForm({ onRegister, lang }: { onRegister: (data: Partial<AppUser>) => void, lang: Language }) {
+function PendingApprovalView({ lang, isDark, onSignOut }: { lang: Language, isDark: boolean, onSignOut: () => void }) {
+  const t = TRANSLATIONS[lang];
+  return (
+    <div className={cn("min-h-screen flex flex-col transition-colors duration-500", 
+      isDark ? "bg-[#020617] text-white dark" : "bg-slate-50 text-slate-800",
+      lang === 'bn' ? 'font-bengali' : 'font-sans')}>
+      
+      <div className="flex-1 flex items-center justify-center p-6 relative overflow-hidden">
+        <div className={cn("absolute top-0 left-0 w-full h-full [background-size:20px_20px] opacity-20", isDark ? "bg-[radial-gradient(rgba(255,255,255,0.05)_1px,transparent_1px)]" : "bg-[radial-gradient(#e2e8f0_1px,transparent_1px)]")} />
+        
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-xl w-full relative z-10"
+        >
+          <div className={cn("border rounded-[2rem] md:rounded-[32px] shadow-2xl p-6 md:p-12 text-center space-y-6 md:space-y-8 overflow-hidden relative", isDark ? "bg-slate-900 border-white/5 shadow-black/40" : "bg-white border-slate-200 shadow-slate-200/50")}>
+            <div className="absolute top-0 left-0 w-full h-2 bg-amber-500"></div>
+            
+            <div className="w-16 h-16 md:w-24 md:h-24 bg-amber-500/10 rounded-[1.5rem] md:rounded-[2rem] flex items-center justify-center text-amber-500 mx-auto shadow-lg shadow-amber-500/20">
+              <Clock size={32} className="md:w-12 md:h-12" />
+            </div>
+
+            <div className="space-y-3 md:space-y-4">
+              <h2 className={cn("text-2xl md:text-3xl font-black tracking-tight uppercase leading-none", isDark ? "text-white" : "text-slate-800")}>
+                {t.pendingApprovalTitle}
+              </h2>
+              <p className={cn("text-xs md:text-sm font-medium leading-relaxed opacity-70", isDark ? "text-slate-400" : "text-slate-500")}>
+                {t.pendingApprovalDesc}
+              </p>
+            </div>
+
+            <div className={cn("p-4 md:p-6 rounded-2xl border flex items-center gap-4 text-left", isDark ? "bg-white/5 border-white/10" : "bg-slate-50 border-slate-100")}>
+              <div className="w-10 h-10 bg-brand rounded-xl flex items-center justify-center text-white shrink-0">
+                <ShieldCheck size={20} />
+              </div>
+              <div>
+                <p className={cn("text-[9px] md:text-[10px] font-black uppercase tracking-widest", isDark ? "text-slate-500" : "text-slate-400")}>
+                  {lang === 'bn' ? 'সম্ভাব্য সময়' : 'Estimated Time'}
+                </p>
+                <p className={cn("text-xs font-bold", isDark ? "text-white" : "text-slate-800")}>
+                  {t.waitingTime}
+                </p>
+              </div>
+            </div>
+
+            <div className="pt-6 md:pt-8 border-t border-slate-100 dark:border-white/5 flex flex-col gap-3 md:gap-4">
+              <button 
+                onClick={onSignOut}
+                className={cn("w-full py-4 rounded-xl font-black text-xs uppercase tracking-widest transition-all", isDark ? "bg-white/5 text-white hover:bg-white/10" : "bg-slate-100 text-slate-600 hover:bg-slate-200")}
+              >
+                {t.logout}
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+function RegistrationForm({ onRegister, lang, isDark }: { onRegister: (data: Partial<AppUser>) => void, lang: Language, isDark: boolean }) {
   const t = TRANSLATIONS[lang];
   const [formData, setFormData] = useState<Partial<AppUser>>({
     nid: '',
     phone: '',
     vehicleNumber: '',
+    engineNumber: '',
+    chassisNumber: '',
+    drivingLicenseNo: '',
+    taxTokenNo: '',
     vehicleClass: 'BIKE PRIVATE',
     manufactureYear: '2024',
     village: '',
     postCode: '',
     upazila: '',
-    district: ''
+    district: '',
+    passportPhoto: '',
+    nidPhoto: '',
+    drivingLicensePhoto: '',
+    taxTokenPhoto: ''
   });
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: keyof AppUser) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 500 * 1024) {
+        alert(lang === 'bn' ? 'ফাইল সাইজ ৫০০কেবি-র বেশি হতে পারবে না' : 'File size must be under 500KB');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, [field]: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const PhotoUpload = ({ label, field, value }: { label: string, field: keyof AppUser, value?: string }) => (
+    <div className="space-y-4">
+      <label className={cn("text-[10px] font-black uppercase tracking-widest ml-1", isDark ? "text-slate-500" : "text-slate-400")}>{label}</label>
+      <div className={cn("relative group border-2 border-dashed rounded-[2rem] p-6 flex flex-col items-center justify-center gap-3 transition-all", 
+        value ? (isDark ? "bg-emerald-500/5 border-emerald-500/20" : "bg-emerald-50 border-emerald-100") : (isDark ? "bg-white/5 border-white/10 hover:border-brand/40" : "bg-slate-50 border-slate-200 hover:border-brand/40"))}>
+        {value ? (
+          <div className="relative group">
+            <img src={value} alt={label} className="w-full h-32 object-cover rounded-xl shadow-lg" referrerPolicy="no-referrer" />
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+              <Camera size={24} className="text-white" />
+            </div>
+            <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, field)} className="absolute inset-0 opacity-0 cursor-pointer" />
+          </div>
+        ) : (
+          <>
+            <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center transition-colors", isDark ? "bg-white/5 text-slate-500" : "bg-white text-slate-300 shadow-sm")}>
+              <Camera size={24} />
+            </div>
+            <div className="text-center">
+              <p className={cn("text-[10px] font-bold uppercase tracking-widest", isDark ? "text-slate-400" : "text-slate-500")}>
+                {lang === 'bn' ? 'ছবি আপলোড করুন' : 'Upload Photo'}
+              </p>
+            </div>
+            <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, field)} className="absolute inset-0 opacity-0 cursor-pointer" />
+          </>
+        )}
+        {value && (
+          <div className="flex items-center gap-2 text-emerald-600 font-bold text-[10px] uppercase tracking-widest">
+            <CheckCircle2 size={12} /> {lang === 'bn' ? 'সংযুক্ত করা হয়েছে' : 'Attached'}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
   return (
-    <div className={cn("min-h-screen bg-slate-50 flex items-center justify-center p-6 relative overflow-hidden", lang === 'bn' ? 'font-bengali' : 'font-sans')}>
-      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:20px_20px] opacity-20" />
+    <div className={cn("flex items-center justify-center p-6 relative overflow-hidden", lang === 'bn' ? 'font-bengali' : 'font-sans')}>
+      <div className={cn("absolute top-0 left-0 w-full h-full [background-size:20px_20px] opacity-20", isDark ? "bg-[radial-gradient(rgba(255,255,255,0.05)_1px,transparent_1px)]" : "bg-[radial-gradient(#e2e8f0_1px,transparent_1px)]")} />
       
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="max-w-3xl w-full relative z-10"
       >
-        <div className="bg-white border border-slate-200 rounded-[32px] shadow-2xl shadow-slate-200/50 p-12 overflow-hidden relative">
+        <div className={cn("border rounded-[32px] shadow-2xl p-6 md:p-12 overflow-hidden relative transition-colors", isDark ? "bg-slate-900 border-white/5 shadow-black/40" : "bg-white border-slate-200 shadow-slate-200/50")}>
           <div className="absolute top-0 left-0 w-full h-2 bg-brand"></div>
           
-          <div className="flex justify-between items-start mb-12">
+          <div className="flex flex-col md:flex-row justify-between items-start mb-12 gap-6">
             <div className="space-y-1">
-              <h2 className="text-3xl font-black text-slate-800 tracking-tight leading-tight uppercase">
-                {t.completeRegistration}
+              <h2 className={cn("text-3xl font-black tracking-tight leading-tight uppercase transition-colors text-brand")}>
+                {t.vehicleRegistration}
               </h2>
-              <p className="text-slate-400 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
-                <ShieldCheck size={14} className="text-brand" /> Verification Required
+              <p className={cn("text-xs font-bold uppercase tracking-widest flex items-center gap-2 mb-2", isDark ? "text-slate-500" : "text-slate-400")}>
+                <ShieldCheck size={14} className="text-brand" /> {lang === 'bn' ? 'যাচাইকরণ প্রয়োজন' : 'Verification Required'}
+              </p>
+              <p className={cn("text-xs font-medium leading-relaxed max-w-md", isDark ? "text-slate-400" : "text-slate-500")}>
+                {t.vehicleRegistrationSub}
               </p>
             </div>
-            <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100">
+            <div className={cn("w-16 h-16 rounded-2xl flex items-center justify-center border transition-colors", isDark ? "bg-white/5 border-white/10" : "bg-slate-50 border-slate-100")}>
                <Fuel className="text-brand" size={32} />
             </div>
           </div>
 
-          <form className="space-y-8" onSubmit={(e) => { e.preventDefault(); onRegister(formData); }}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{t.fullName}</label>
-                <div className="relative group">
-                  <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand transition-colors" size={16} />
-                  <input 
-                    required
-                    className="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-xl py-4 pl-12 pr-4 font-bold placeholder:text-slate-200 focus:bg-white focus:ring-4 focus:ring-brand/5 outline-none transition-all"
-                    type="text" 
-                    placeholder="Official Name"
-                    value={formData.name || ''}
-                    onChange={e => setFormData({...formData, name: e.target.value})}
-                  />
+          <form className="space-y-12" onSubmit={(e) => { e.preventDefault(); onRegister(formData); }}>
+            {/* Account Info Section */}
+            <div className="space-y-6">
+              <h3 className={cn("text-xs font-black uppercase tracking-[0.2em] flex items-center gap-3", isDark ? "text-brand" : "text-blue-900")}>
+                <Lock size={14} /> {lang === 'bn' ? 'অ্যাকাউন্ট তথ্য' : 'Account Information'}
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className={cn("text-[10px] font-black uppercase tracking-widest ml-1", isDark ? "text-slate-500" : "text-slate-400")}>{t.email}</label>
+                  <div className="relative group grayscale">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+                    <input 
+                      disabled
+                      className={cn("w-full border rounded-xl py-4 pl-12 pr-4 font-bold outline-none transition-all opacity-60", isDark ? "bg-white/5 text-slate-400 border-white/10" : "bg-slate-50 text-slate-400 border-slate-200")}
+                      type="text" 
+                      value={auth.currentUser?.email || ''}
+                    />
+                  </div>
                 </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{t.phoneNumber}</label>
-                <div className="relative group">
-                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand transition-colors" size={16} />
-                  <input 
-                    required
-                    className="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-xl py-4 pl-12 pr-4 font-bold placeholder:text-slate-200 focus:bg-white focus:ring-4 focus:ring-brand/5 outline-none transition-all"
-                    type="tel" 
-                    placeholder="01XXXXXXXXX"
-                    value={formData.phone || ''}
-                    onChange={e => setFormData({...formData, phone: e.target.value})}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2 text-left">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{t.nidNumber}</label>
-                <div className="relative group">
-                  <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand transition-colors" size={16} />
-                  <input 
-                    required
-                    className="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-xl py-4 pl-12 pr-4 font-bold placeholder:text-slate-200 focus:bg-white focus:ring-4 focus:ring-brand/5 outline-none transition-all"
-                    type="text" 
-                    placeholder="NID"
-                    value={formData.nid || ''}
-                    onChange={e => setFormData({...formData, nid: e.target.value || ''})}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2 text-left">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{t.registrationNumber}</label>
-                <div className="relative group">
-                  <Truck className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand transition-colors" size={16} />
-                  <input 
-                    required
-                    className="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-xl py-4 pl-12 pr-4 font-bold placeholder:text-slate-200 focus:bg-white focus:ring-4 focus:ring-brand/5 outline-none transition-all"
-                    type="text" 
-                    placeholder="PLATE NO."
-                    value={formData.vehicleNumber || ''}
-                    onChange={e => setFormData({...formData, vehicleNumber: e.target.value || ''})}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2 text-left">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{t.vehicleClassShort}</label>
-                <div className="relative group">
-                  <Zap className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand transition-colors" size={16} />
-                  <select 
-                    required
-                    className="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-xl py-4 pl-12 pr-4 font-bold focus:bg-white focus:ring-4 focus:ring-brand/5 outline-none transition-all appearance-none"
-                    value={formData.vehicleClass}
-                    onChange={e => setFormData({...formData, vehicleClass: e.target.value})}
-                  >
-                    <option value="BIKE PRIVATE">BIKE PRIVATE</option>
-                    <option value="CAR PRIVATE">CAR PRIVATE</option>
-                    <option value="COMMERCIAL">COMMERCIAL</option>
-                    <option value="OTHER">OTHER</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="space-y-2 text-left">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{t.manufactureYearShort}</label>
-                <div className="relative group">
-                  <Clock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand transition-colors" size={16} />
-                  <input 
-                    required
-                    className="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-xl py-4 pl-12 pr-4 font-bold placeholder:text-slate-200 focus:bg-white focus:ring-4 focus:ring-brand/5 outline-none transition-all"
-                    type="number" 
-                    placeholder="2021"
-                    value={formData.manufactureYear || ''}
-                    onChange={e => setFormData({...formData, manufactureYear: e.target.value || ''})}
-                  />
+                <div className="space-y-2">
+                  <label className={cn("text-[10px] font-black uppercase tracking-widest ml-1", isDark ? "text-slate-500" : "text-slate-400")}>{t.password}</label>
+                  <div className="relative group grayscale">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+                    <input 
+                      disabled
+                      className={cn("w-full border rounded-xl py-4 pl-12 pr-4 font-bold outline-none transition-all opacity-60", isDark ? "bg-white/5 text-slate-400 border-white/10" : "bg-slate-50 text-slate-400 border-slate-200")}
+                      type="password" 
+                      value="••••••••••••"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="p-8 bg-slate-50 rounded-2xl border border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-6">
-               <div className="space-y-2 text-left">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{t.houseHolding} / {t.villageStreet}</label>
-                  <input 
-                    required
-                    className="w-full bg-white text-slate-800 border border-slate-200 rounded-xl py-3 px-4 font-bold text-sm focus:ring-2 focus:ring-brand/20 outline-none"
-                    placeholder="Address detail"
-                    value={formData.village || ''}
-                    onChange={e => setFormData({...formData, village: e.target.value || ''})}
-                  />
-               </div>
-               <div className="space-y-2 text-left">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{t.postOffice} / Code</label>
-                  <input 
-                    required
-                    className="w-full bg-white text-slate-800 border border-slate-200 rounded-xl py-3 px-4 font-bold text-sm focus:ring-2 focus:ring-brand/20 outline-none"
-                    placeholder="Post Code"
-                    value={formData.postCode || ''}
-                    onChange={e => setFormData({...formData, postCode: e.target.value || ''})}
-                  />
-               </div>
+            {/* Personal Details */}
+            <div className="space-y-6">
+              <h3 className={cn("text-xs font-black uppercase tracking-[0.2em] flex items-center gap-3", isDark ? "text-brand" : "text-blue-900")}>
+                <UserIcon size={14} /> {lang === 'bn' ? 'ব্যক্তিগত তথ্য' : 'Personal Details'}
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className={cn("text-[10px] font-black uppercase tracking-widest ml-1", isDark ? "text-slate-500" : "text-slate-400")}>{t.fullName}</label>
+                  <div className="relative group">
+                    <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand transition-colors" size={16} />
+                    <input 
+                      required
+                      className={cn("w-full border rounded-xl py-4 pl-12 pr-4 font-bold outline-none transition-all", isDark ? "bg-white/5 text-white border-white/10 focus:bg-white/10" : "bg-slate-50 text-slate-800 border-slate-200 focus:bg-white focus:ring-4 focus:ring-brand/5")}
+                      type="text" 
+                      placeholder="Official Name"
+                      value={formData.name || ''}
+                      onChange={e => setFormData({...formData, name: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className={cn("text-[10px] font-black uppercase tracking-widest ml-1", isDark ? "text-slate-500" : "text-slate-400")}>{t.phoneNumber}</label>
+                  <div className="relative group">
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand transition-colors" size={16} />
+                    <input 
+                      required
+                      className={cn("w-full border rounded-xl py-4 pl-12 pr-4 font-bold outline-none transition-all", isDark ? "bg-white/5 text-white border-white/10 focus:bg-white/10" : "bg-slate-50 text-slate-800 border-slate-200 focus:bg-white focus:ring-4 focus:ring-brand/5")}
+                      type="tel" 
+                      placeholder="01XXXXXXXXX"
+                      value={formData.phone || ''}
+                      onChange={e => setFormData({...formData, phone: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2 text-left">
+                  <label className={cn("text-[10px] font-black uppercase tracking-widest ml-1", isDark ? "text-slate-500" : "text-slate-400")}>{t.nidNumber}</label>
+                  <div className="relative group">
+                    <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand transition-colors" size={16} />
+                    <input 
+                      required
+                      className={cn("w-full border rounded-xl py-4 pl-12 pr-4 font-bold outline-none transition-all", isDark ? "bg-white/5 text-white border-white/10 focus:bg-white/10" : "bg-slate-50 text-slate-800 border-slate-200 focus:bg-white focus:ring-4 focus:ring-brand/5")}
+                      type="text" 
+                      placeholder="NID"
+                      value={formData.nid || ''}
+                      onChange={e => setFormData({...formData, nid: e.target.value || ''})}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2 text-left">
+                  <label className={cn("text-[10px] font-black uppercase tracking-widest ml-1", isDark ? "text-slate-500" : "text-slate-400")}>{t.drivingLicenseNo}</label>
+                  <div className="relative group">
+                    <FileText className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand transition-colors" size={16} />
+                    <input 
+                      required
+                      className={cn("w-full border rounded-xl py-4 pl-12 pr-4 font-bold outline-none transition-all", isDark ? "bg-white/5 text-white border-white/10 focus:bg-white/10" : "bg-slate-50 text-slate-800 border-slate-200 focus:bg-white focus:ring-4 focus:ring-brand/5")}
+                      type="text" 
+                      placeholder="License Number"
+                      value={formData.drivingLicenseNo || ''}
+                      onChange={e => setFormData({...formData, drivingLicenseNo: e.target.value})}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Vehicle Details */}
+            <div className="space-y-6">
+              <h3 className={cn("text-xs font-black uppercase tracking-[0.2em] flex items-center gap-3", isDark ? "text-brand" : "text-blue-900")}>
+                <Truck size={14} /> {lang === 'bn' ? 'যানবাহনের তথ্য' : 'Vehicle Details'}
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2 text-left">
+                  <label className={cn("text-[10px] font-black uppercase tracking-widest ml-1", isDark ? "text-slate-500" : "text-slate-400")}>{t.licensePlate}</label>
+                  <div className="relative group">
+                    <Truck className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand transition-colors" size={16} />
+                    <input 
+                      required
+                      className={cn("w-full border rounded-xl py-4 pl-12 pr-4 font-bold outline-none transition-all", isDark ? "bg-white/5 text-white border-white/10 focus:bg-white/10" : "bg-slate-50 text-slate-800 border-slate-200 focus:bg-white focus:ring-4 focus:ring-brand/5")}
+                      type="text" 
+                      placeholder="e.g. DHAKA METRO-LA-11-2233"
+                      value={formData.vehicleNumber || ''}
+                      onChange={e => setFormData({...formData, vehicleNumber: e.target.value || ''})}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2 text-left">
+                  <label className={cn("text-[10px] font-black uppercase tracking-widest ml-1", isDark ? "text-slate-500" : "text-slate-400")}>{t.engineNumber}</label>
+                  <div className="relative group">
+                    <Activity className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand transition-colors" size={16} />
+                    <input 
+                      required
+                      className={cn("w-full border rounded-xl py-4 pl-12 pr-4 font-bold outline-none transition-all", isDark ? "bg-white/5 text-white border-white/10 focus:bg-white/10" : "bg-slate-50 text-slate-800 border-slate-200 focus:bg-white focus:ring-4 focus:ring-brand/5")}
+                      type="text" 
+                      placeholder="Engine Number"
+                      value={formData.engineNumber || ''}
+                      onChange={e => setFormData({...formData, engineNumber: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2 text-left">
+                  <label className={cn("text-[10px] font-black uppercase tracking-widest ml-1", isDark ? "text-slate-500" : "text-slate-400")}>{t.chassisNumber}</label>
+                  <div className="relative group">
+                    <Activity className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand transition-colors" size={16} />
+                    <input 
+                      required
+                      className={cn("w-full border rounded-xl py-4 pl-12 pr-4 font-bold outline-none transition-all", isDark ? "bg-white/5 text-white border-white/10 focus:bg-white/10" : "bg-slate-50 text-slate-800 border-slate-200 focus:bg-white focus:ring-4 focus:ring-brand/5")}
+                      type="text" 
+                      placeholder="Chassis Number"
+                      value={formData.chassisNumber || ''}
+                      onChange={e => setFormData({...formData, chassisNumber: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2 text-left">
+                  <label className={cn("text-[10px] font-black uppercase tracking-widest ml-1", isDark ? "text-slate-500" : "text-slate-400")}>{t.vehicleClassShort}</label>
+                  <div className="relative group">
+                    <Zap className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand transition-colors" size={16} />
+                    <select 
+                      required
+                      className={cn("w-full border rounded-xl py-4 pl-12 pr-4 font-bold outline-none transition-all appearance-none", isDark ? "bg-white/5 text-white border-white/10 focus:bg-white/10" : "bg-slate-50 text-slate-800 border-slate-200 focus:bg-white focus:ring-4 focus:ring-brand/5")}
+                      value={formData.vehicleClass}
+                      onChange={e => setFormData({...formData, vehicleClass: e.target.value})}
+                    >
+                      <option value="BIKE PRIVATE">BIKE PRIVATE</option>
+                      <option value="CAR PRIVATE">CAR PRIVATE</option>
+                      <option value="COMMERCIAL">COMMERCIAL</option>
+                      <option value="OTHER">OTHER</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="space-y-2 text-left">
+                  <label className={cn("text-[10px] font-black uppercase tracking-widest ml-1", isDark ? "text-slate-500" : "text-slate-400")}>{t.taxTokenNo}</label>
+                  <div className="relative group">
+                    <FileCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand transition-colors" size={16} />
+                    <input 
+                      required
+                      className={cn("w-full border rounded-xl py-4 pl-12 pr-4 font-bold outline-none transition-all", isDark ? "bg-white/5 text-white border-white/10 focus:bg-white/10" : "bg-slate-50 text-slate-800 border-slate-200 focus:bg-white focus:ring-4 focus:ring-brand/5")}
+                      type="text" 
+                      placeholder="Tax Token No."
+                      value={formData.taxTokenNo || ''}
+                      onChange={e => setFormData({...formData, taxTokenNo: e.target.value})}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Document Uploads */}
+            <div className="space-y-6">
+              <h3 className={cn("text-xs font-black uppercase tracking-[0.2em] flex items-center gap-3", isDark ? "text-brand" : "text-blue-900")}>
+                <Camera size={14} /> {t.uploadRequiredDocs}
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <PhotoUpload label={t.passportPhoto} field="passportPhoto" value={formData.passportPhoto} />
+                <PhotoUpload label={t.nidPhoto} field="nidPhoto" value={formData.nidPhoto} />
+                <PhotoUpload label={t.drivingLicensePhoto} field="drivingLicensePhoto" value={formData.drivingLicensePhoto} />
+                <PhotoUpload label={t.taxTokenPhoto} field="taxTokenPhoto" value={formData.taxTokenPhoto} />
+              </div>
             </div>
 
             <button 
@@ -2643,7 +2509,7 @@ function RegistrationForm({ onRegister, lang }: { onRegister: (data: Partial<App
   );
 }
 
-function DashboardManager({ pumps, prices, lang }: { pumps: Pump[], prices: FuelPrice | null, lang: Language }) {
+function DashboardManager({ pumps, prices, lang, isDark }: { pumps: Pump[], prices: FuelPrice | null, lang: Language, isDark: boolean }) {
   const t = TRANSLATIONS[lang];
   const [selectedPump, setSelectedPump] = useState<string>('');
   const [scanning, setScanning] = useState(false);
@@ -2769,12 +2635,13 @@ function DashboardManager({ pumps, prices, lang }: { pumps: Pump[], prices: Fuel
               </div>
             </div>
 
-            <div className="p-8 space-y-8 bg-white">
+            <div className={cn("p-6 md:p-8 space-y-6 md:space-y-8 transition-colors", isDark ? "bg-slate-900" : "bg-white")}>
               <div className="space-y-3">
-                <label className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-widest block ml-1">{t.terminalLocation}</label>
+                <label className={cn("text-[10px] font-mono font-bold uppercase tracking-widest block ml-1", isDark ? "text-slate-500" : "text-slate-400")}>{t.terminalLocation}</label>
                 <div className="relative">
                   <select 
-                    className="w-full p-4 bg-technical-bg border-b-2 border-technical-line rounded-none text-base font-bold outline-none focus:border-technical-ink transition-all appearance-none cursor-pointer"
+                    className={cn("w-full p-4 border-b-2 rounded-none text-base font-bold outline-none transition-all appearance-none cursor-pointer", 
+                      isDark ? "bg-white/5 border-white/10 text-white focus:border-brand" : "bg-slate-50 border-slate-200 text-slate-800 focus:border-blue-900")}
                     value={selectedPump || ''}
                     onChange={e => setSelectedPump(e.target.value)}
                   >
@@ -3084,7 +2951,7 @@ function UserDetailModal({ user, lang, onClose, onUpdate }: { user: AppUser, lan
   );
 }
 
-function DashboardAdmin({ pumps, prices, lang, showToast, activeView = 'pending' }: { pumps: Pump[], prices: FuelPrice | null, lang: Language, showToast: (m: string, t?: 'success' | 'error') => void, activeView?: 'pending' | 'users' | 'prices' | 'stats' | 'mgmt' }) {
+function DashboardAdmin({ pumps, prices, lang, showToast, isDark, activeView = 'pending' }: { pumps: Pump[], prices: FuelPrice | null, lang: Language, showToast: (m: string, t?: 'success' | 'error') => void, isDark: boolean, activeView?: 'pending' | 'users' | 'prices' | 'stats' | 'mgmt' }) {
   const t = TRANSLATIONS[lang];
   const [users, setUsers] = useState<AppUser[]>([]);
   const [selectedUser, setSelectedUser] = useState<AppUser | null>(null);
@@ -3128,7 +2995,7 @@ function DashboardAdmin({ pumps, prices, lang, showToast, activeView = 'pending'
     }
   };
 
-  const isSuperAdmin = auth.currentUser?.email?.toLowerCase() === 'mdrifathossainpersonal@gmail.com' || auth.currentUser?.email?.toLowerCase() === 'unobochaganj@mopa.gov.bd';
+  const isSuperAdmin = auth.currentUser?.email?.toLowerCase() === 'mdrifathossainpersonal@gmail.com' || auth.currentUser?.email?.toLowerCase() === 'unobochaganj@gov.bd';
 
   const updateUserRole = async (userId: string, newRole: AppUser['role']) => {
     if (!isSuperAdmin) {

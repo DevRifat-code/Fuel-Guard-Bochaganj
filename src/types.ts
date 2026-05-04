@@ -7,6 +7,14 @@ export interface AppUser {
   nid: string;
   phone?: string;
   licensePhoto?: string;
+  drivingLicenseNo?: string;
+  taxTokenNo?: string;
+  engineNumber?: string;
+  chassisNumber?: string;
+  passportPhoto?: string;
+  nidPhoto?: string;
+  drivingLicensePhoto?: string;
+  taxTokenPhoto?: string;
   vehicleNumber: string;
   vehicleClass?: string;
   manufactureYear?: string;
